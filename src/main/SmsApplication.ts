@@ -8,6 +8,8 @@ import express, {Express} from "express";
 import fileUpload from "express-fileupload";
 import Database from "./Database";
 import User from "./user/User";
+import Auth from "./auth/Auth";
+import Item from "./item/Item";
 
 class SmsApplication {
 
@@ -23,13 +25,20 @@ class SmsApplication {
         }))
 
         app.use(express.json({limit: "50mb"}));
-        app.use(express.urlencoded({limit: "50mb", extended: true}));
+        app.use(express.urlencoded({
+            limit: "50mb",
+            extended: true
+        }));
         app.use(morgan("dev"));
         app.use(fileUpload({
-            limits: {fileSize: 100 * 1024 * 1024}
+            limits: {
+                fileSize: 100 * 1024 * 1024
+            }
         }));
 
-        app.use("/api/v1/user", User())
+        app.use("/api/v1/user", User());
+        app.use("/api/v1/auth", Auth());
+        app.use("/api/v1/item", Item());
 
         return app;
     }
