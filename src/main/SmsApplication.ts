@@ -1,3 +1,6 @@
+import {config} from "dotenv";
+config();
+
 import cors from "cors";
 import http from "http";
 import morgan from "morgan";
