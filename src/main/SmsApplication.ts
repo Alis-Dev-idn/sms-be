@@ -3,13 +3,15 @@ import http from "http";
 import morgan from "morgan";
 import express, {Express} from "express";
 import fileUpload from "express-fileupload";
-import Database from "./database/Database";
+import Database from "./Database";
 import User from "./user/User";
 
 class SmsApplication {
 
     private apps(): Express {
         const app = express();
+
+        app.disable('x-powered-by');
 
         app.use(cors({
             origin: "*",

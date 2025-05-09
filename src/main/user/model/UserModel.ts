@@ -1,5 +1,5 @@
 import {Schema, model} from "mongoose";
-import {UserEntity} from "../../entity/user/UserEntity";
+import {UserEntity} from "../entity/UserEntity";
 
 export default model<UserEntity>('user', new Schema<UserEntity>({
     email: {

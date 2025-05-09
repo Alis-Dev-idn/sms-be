@@ -1,5 +1,5 @@
 import {Schema} from "mongoose";
-import {UserRoleEntity} from "../../entity/user/UserRoleEntity";
+import {UserRoleEntity} from "../entity/UserRoleEntity";
 
 export default model<UserRoleEntity>('user_role', new Schema<UserRoleEntity>({
     role: {
