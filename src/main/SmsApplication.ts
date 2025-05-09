@@ -1,0 +1,44 @@
+import cors from "cors";
+import http from "http";
+import morgan from "morgan";
+import express, {Express} from "express";
+import fileUpload from "express-fileupload";
+import Database from "./database/Database";
+import User from "./user/User";
+
+class SmsApplication {
+
+    private apps(): Express {
+        const app = express();
+
+        app.use(cors({
+            origin: "*",
+            methods: ["GET", "POST", "PUT", "DELETE"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+        }))
+
+        app.use(express.json({limit: "50mb"}));
+        app.use(express.urlencoded({limit: "50mb", extended: true}));
+        app.use(morgan("dev"));
+        app.use(fileUpload({
+            limits: {fileSize: 100 * 1024 * 1024}
+        }));
+
+        app.use("/api/v1/user", User())
+
+        return app;
+    }
+
+    public start(): void {
+        const port: number = Number(process.env.EXPRESS_SERVER_PORT) || 3000;
+        Database.connect(() => {
+            http.createServer(this.apps())
+                .listen(port, () => {
+                    console.log(`Server is running on port ${port}`);
+                })
+        });
+    }
+}
+
+
+export default new SmsApplication();
