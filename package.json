@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon",
+    "dev": "nodemon",
     "build": "npx tsc --build && pkg --compress GZip package.json"
   },
   "keywords": [],
