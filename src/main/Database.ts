@@ -1,4 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, {ObjectId} from 'mongoose';
+import UserService from "./user/UserService";
+import RoleService from "./role/RoleService";
+
+export const IdValidate = (id: string): boolean => {
+    return mongoose.Types.ObjectId.isValid(id);
+}
 
 class Database {
     private uri: string;
@@ -11,14 +17,39 @@ class Database {
         this.uri = process.env.SERVER_MONGODB_URI || "mongodb://localhost:27017/";
     }
 
+    private async checkDb(): Promise<void> {
+        try {
+            const numberUser = await UserService.getTotalUser();
+            const numberRole = await RoleService.getTotalRole();
+            if (numberRole === 0) {
+                const role = await RoleService.createRole({
+                    name: "Admin",
+                    menuId: [],
+                    permissions: ["read", "write", "delete", "update"]
+                });
+                if (numberUser === 0) {
+                    await UserService.createUser({
+                        fullName: "Admin",
+                        userName: "admin",
+                        password: "admin",
+                        roleId: role._id as ObjectId,
+                    });
+                }
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
+
     public connect(server: () => void): void {
         mongoose.connect(this.uri, {
             auth: {
                 username: this.username,
                 password: this.password
             }
-        }).then(() => {
+        }).then(async () => {
             console.log('Connected to database')
+            await this.checkDb();
             server();
         })
             .catch((err: Error) => {
