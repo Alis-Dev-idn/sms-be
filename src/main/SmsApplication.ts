@@ -8,8 +8,10 @@ import express, {Express} from "express";
 import fileUpload from "express-fileupload";
 import Database from "./Database";
 import User from "./user/User";
+import Role from "./role/Role";
+import Menu from "./menu/Menu";
 import Auth from "./auth/Auth";
-import Item from "./item/Item";
+import Middleware from "./Middleware";
 
 class SmsApplication {
 
@@ -36,9 +38,10 @@ class SmsApplication {
             }
         }));
 
-        app.use("/api/v1/user", User());
+        app.use("/api/v1/user", Middleware.tokenAccess, User());
         app.use("/api/v1/auth", Auth());
-        app.use("/api/v1/item", Item());
+        app.use("/api/v1/role", Role());
+        app.use("/api/v1/menu", Menu());
 
         return app;
     }
