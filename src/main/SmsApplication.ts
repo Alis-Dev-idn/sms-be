@@ -43,6 +43,13 @@ class SmsApplication {
         app.use("/api/v1/role", Role());
         app.use("/api/v1/menu", Menu());
 
+        app.use((req, res) => {
+            res.status(404).json({
+                path: req.path,
+                error: "Not Found"
+            })
+        })
+
         return app;
     }
 
