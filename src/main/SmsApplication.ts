@@ -40,8 +40,8 @@ class SmsApplication {
 
         app.use("/api/v1/user", Middleware.tokenAccess, User());
         app.use("/api/v1/auth", Auth());
-        app.use("/api/v1/role", Role());
-        app.use("/api/v1/menu", Menu());
+        app.use("/api/v1/role", Middleware.tokenAccess, Role());
+        app.use("/api/v1/menu", Middleware.tokenAccess, Menu());
 
         app.use((req, res) => {
             res.status(404).json({

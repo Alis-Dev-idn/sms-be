@@ -1,4 +1,4 @@
-import {Model} from "mongoose";
+import {Model, ProjectionType} from "mongoose";
 import RoleModel from "./RoleModel";
 import {RoleEntity} from "./RoleEntity";
 import {joiCreateRole} from "../joi/RoleJoi";
@@ -9,6 +9,10 @@ class RoleService {
 
     public getTotalRole(): Promise<number> {
         return this.model.find().countDocuments();
+    }
+
+    public getAllRole(projection?: ProjectionType<any>): Promise<RoleEntity[]> {
+        return this.model.find({}, projection).lean();
     }
 
     public createRole(data: RoleEntity): Promise<RoleEntity> {

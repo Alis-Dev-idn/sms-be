@@ -1,17 +1,19 @@
 import {RequestHandler} from "express";
 import {RolePermission} from "../role/RoleEntity";
+import UserService from "./UserService";
+import {SendError, SendOk} from "../helper/ResponseHelper";
 
 
 class UserController {
 
     public get(...permission: RolePermission[]): RequestHandler {
         return (req, res) => {
-            if (!req.permission || !req.permission.some((perm) => permission.includes(perm))) {
+            if (!req.permission || !req.permission.some((perm) => permission.includes(perm)))
                 res.status(403).json({ error: "Permission denied" });
-            } else {
-                // Logic to get all users
-                res.status(200).json({ message: "All users retrieved successfully" });
-            }
+
+            UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})
+                .then(result => SendOk(res, result))
+                .catch(error => SendError(res, error))
         }
     }
 }

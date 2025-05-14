@@ -38,6 +38,7 @@ class Middleware {
             jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY || "", {
                 algorithms: ["HS256"]
             });
+
             req._id = decode.userId;
             req.permission = decode.permissions as RolePermission[];
             next();

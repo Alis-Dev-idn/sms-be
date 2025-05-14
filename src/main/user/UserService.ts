@@ -16,6 +16,10 @@ class UserService {
         return this.model.findOne({userName}, projection).populate("roleId", {__v: 0}).lean();
     }
 
+    public getAllUser(projection?: ProjectionType<any>): Promise<UserEntity[]> {
+        return this.model.find({}, projection).lean();
+    }
+
     public getTotalUser(): Promise<number> {
         return this.model.find().countDocuments();
     }
