@@ -113,6 +113,7 @@ export default (): Router => {
         if(!HasPermission(req.permission))
             return res.status(403).json({error: "Forbidden"});
 
+        req.body.createdBy = req._id;
         UserService.createUser(req.body)
             .then(user => SendOk(res, "Successfully created new user"))
             .catch(error => SendError(res, error));
