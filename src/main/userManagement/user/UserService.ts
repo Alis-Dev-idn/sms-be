@@ -16,8 +16,65 @@ class UserService {
         return this.model.findById(id, projection).populate("roleId", {__v: 0}).lean();
     }
 
-    public getUserByUserName(userName: string, projection?: ProjectionType<any>): Promise<UserModel | null> {
-        return this.model.findOne({userName}, projection).populate("roleId", {__v: 0}).lean();
+    public async getUserByUserName(userName: string, projection?: ProjectionType<any>): Promise<UserModel | null> {
+        const result = await this.model.aggregate([
+            {
+                $match: {
+                    userName: {$regex: userName, $options: "i"}
+                }
+            },
+            {
+                $lookup: {
+                    from: "roles",
+                    localField: "roleId",
+                    foreignField: "_id",
+                    pipeline: [
+                        {
+                            $project: {
+                                __v: 0,
+                                createdAt: 0,
+                                updatedAt: 0
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "menus",
+                                localField: "menuId",
+                                foreignField: "_id",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            name: 1
+                                        }
+                                    }
+                                ],
+                                as: "menuId"
+                            }
+                        },
+                        {
+                            $addFields: {
+                                menuId: {
+                                    $map: {
+                                        input: "$menuId",
+                                        as: "menu",
+                                        in: "$$menu.name"
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    as: "roleId"
+                }
+            },
+            {
+                $addFields: {
+                    roleId: {
+                        $arrayElemAt: ["$roleId", 0]
+                    }
+                }
+            }
+        ])
+        return result[0];
     }
 
     public getAllUser(projection?: ProjectionType<any>): Promise<UserModel[]> {
