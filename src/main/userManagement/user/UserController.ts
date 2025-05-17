@@ -18,6 +18,40 @@ export default (): Router => {
      *     responses:
      *       200:
      *         description: Daftar semua user
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                          type: array
+     *                          items:
+     *                              type: object
+     *                              properties:
+     *                                  _id:
+     *                                      type: string
+     *                                      description: ID user
+     *                                      example: 1234567890abcdef12345678
+     *                                  fullName:
+     *                                      type: string
+     *                                      description: Nama lengkap user
+     *                                      example: John Doe
+     *                                  userName:
+     *                                      type: string
+     *                                      description: Username user
+     *                                      example: johndoe
+     *                                  createdAt:
+     *                                      type: string
+     *                                      description: Tanggal pembuatan user
+     *                                      example: 2023-01-01T00:00:00.000Z
+     *                                  updatedAt:
+     *                                      type: string
+     *                                      description: Tanggal update user
+     *                                      example: 2023-01-01T00:00:00.000Z
+     *
+     *
+     *
+     *
      */
     router.get("/", (req, res) => {
         if (!req.permission)

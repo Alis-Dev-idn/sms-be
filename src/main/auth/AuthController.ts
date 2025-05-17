@@ -3,6 +3,9 @@ import AuthService from "./AuthService";
 import authService from "./AuthService";
 import {joiUserLogin} from "../config/joi/UserJoi";
 import {SendError, SendOk} from "../helper/ResponseHelper";
+import Middleware from "../config/Middleware";
+import {HasPermission} from "../userManagement/role/RoleModel";
+import UserService from "../userManagement/user/UserService";
 
 const router = Router();
 
@@ -58,11 +61,89 @@ export default (): Router => {
             .then(user => SendOk(res, user))
             .catch(error => SendError(res, error));
     });
-    router.post("/logout", (req, res) => {
-        res.send("Logout OK");
+
+    /**
+     * @swagger
+     * /auth/register:
+     *   post:
+     *     summary: Register
+     *     tags:
+     *       - Auth
+     *     security:
+     *      - bearerAuth: []
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               userName:
+     *                 type: string
+     *               fullName:
+     *                  type: string
+     *               password:
+     *                 type: string
+     *               roleId:
+     *                  type: string
+     *             required:
+     *               - username
+     *               - password
+     *               - fullName
+     *               - roleId
+     *
+     *     responses:
+     *      200:
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      message:
+     *                          type: string
+     *                          description: Success message
+     *                          example: "Successfully created new user"
+     *
+     *
+     */
+    router.post("/register", Middleware.access, (req, res) => {
+        if(!req.permission)
+            return res.status(403).json({error: "Forbidden"});
+        if(!HasPermission(req.permission))
+            return res.status(403).json({error: "Forbidden"});
+
+        UserService.createUser(req.body)
+            .then(user => SendOk(res, "Successfully created new user"))
+            .catch(error => SendError(res, error));
     });
-    router.post("/register", (req, res) => {
-        res.send("Resgister OK");
+
+
+    /**
+     * @swagger
+     * /auth/logout:
+     *   post:
+     *     summary: Logout
+     *     tags:
+     *       - Auth
+     *     security:
+     *      - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      message:
+     *                          type: string
+     *                          description: Success message
+     *                          example: "Logout OK"
+     *
+     */
+    router.post("/logout", Middleware.access, (req, res) => {
+        res.status(200).json({data: "Logout OK"});
     });
 
     return router;
