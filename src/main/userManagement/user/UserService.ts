@@ -1,22 +1,22 @@
 import {Model, ProjectionType} from "mongoose";
-import {UserEntity} from "./UserEntity";
 import UserModel from "./UserModel";
-import {joiUserCreate} from "../joi/UserJoi";
-import {hastPassword} from "../auth/AuthUtils";
+import {joiUserCreate} from "../../config/joi/UserJoi";
+import {hastPassword} from "../../auth/AuthUtils";
+import User from "./User";
 
 
 class UserService {
-    private model: Model<UserEntity> = UserModel;
+    private model: Model<UserModel> = User;
 
-    public getUserById(id: string, projection?: ProjectionType<any>): Promise<UserEntity | null> {
+    public getUserById(id: string, projection?: ProjectionType<any>): Promise<UserModel | null> {
         return this.model.findById(id, projection).populate("roleId", {__v: 0}).lean();
     }
 
-    public getUserByUserName(userName: string, projection?: ProjectionType<any>): Promise<UserEntity | null> {
+    public getUserByUserName(userName: string, projection?: ProjectionType<any>): Promise<UserModel | null> {
         return this.model.findOne({userName}, projection).populate("roleId", {__v: 0}).lean();
     }
 
-    public getAllUser(projection?: ProjectionType<any>): Promise<UserEntity[]> {
+    public getAllUser(projection?: ProjectionType<any>): Promise<UserModel[]> {
         return this.model.find({}, projection).lean();
     }
 
@@ -24,7 +24,7 @@ class UserService {
         return this.model.find().countDocuments();
     }
 
-    public createUser(data: UserEntity): Promise<UserEntity> {
+    public createUser(data: UserModel): Promise<UserModel> {
         return new Promise(async (resolve, reject) => {
             try {
                 const {error} = joiUserCreate.validate(data);

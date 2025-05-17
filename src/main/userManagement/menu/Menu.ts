@@ -1,7 +1,7 @@
 import {model, Schema} from "mongoose";
-import {MenuEntity} from "./MenuEntity";
+import MenuModel from "./MenuModel";
 
-export default model<MenuEntity>("menu", new Schema<MenuEntity>({
+export default model<MenuModel>("menu", new Schema<MenuModel>({
     name: {
         type: String,
         required: true,

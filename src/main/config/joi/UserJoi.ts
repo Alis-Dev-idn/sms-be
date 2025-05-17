@@ -1,6 +1,6 @@
 import joi, {ObjectSchema} from 'joi';
-import {UserEntity} from "../user/UserEntity";
 import mongoose from "mongoose";
+import UserModel from "../../userManagement/user/UserModel";
 
 export const joiUserLogin: ObjectSchema = joi.object({
     userName: joi.string().min(5).required().messages({
@@ -17,7 +17,7 @@ export const joiUserLogin: ObjectSchema = joi.object({
     })
 });
 
-export const joiUserCreate: ObjectSchema<UserEntity> = joi.object<UserEntity>({
+export const joiUserCreate: ObjectSchema<UserModel> = joi.object<UserModel>({
     fullName: joi.string().min(5).required().messages({
         'string.base': 'Full name must be a string',
         'string.empty': 'Full name cannot be empty',

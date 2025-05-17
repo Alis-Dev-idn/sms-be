@@ -1,7 +1,7 @@
 import {model, Schema} from "mongoose";
-import {UserEntity} from "./UserEntity";
+import UserModel from "./UserModel";
 
-export default model<UserEntity>("user", new Schema<UserEntity>({
+export default model<UserModel>("user", new Schema<UserModel>({
     fullName: {
         type: String,
         required: true

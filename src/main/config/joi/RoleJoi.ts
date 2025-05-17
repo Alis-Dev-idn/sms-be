@@ -1,7 +1,7 @@
 import joi, {ObjectSchema} from "joi";
-import {RoleEntity} from "../role/RoleEntity";
+import RoleModel from "../../userManagement/role/RoleModel";
 
-export const joiCreateRole: ObjectSchema<RoleEntity> = joi.object<RoleEntity>({
+export const joiCreateRole: ObjectSchema<RoleModel> = joi.object<RoleModel>({
     name: joi.string().min(3).required().messages({
         'string.base': 'Name must be a string',
         'string.empty': 'Name cannot be empty',
@@ -14,8 +14,12 @@ export const joiCreateRole: ObjectSchema<RoleEntity> = joi.object<RoleEntity>({
         'any.required': 'Menu ID is required'
     }),
     permissions: joi.array().items(joi.string().valid("read", "write", "delete", "update")).required().messages({
-        'array.base': 'Permissions must be an array',
+        'array.base': 'Permission must be an array',
         'string.base': 'Permission must be a string',
-        'any.required': 'Permissions are required'
+        'any.only': 'Permission must be one of [read, write, delete, update]',
+        'array.includesRequiredUnknowns': 'Permission must include valid permission values',
+        'array.min': 'Permission must have at least one value',
+        'array.empty': 'Permission cannot be empty',
+        'any.required': 'Permissions is required'
     })
 });

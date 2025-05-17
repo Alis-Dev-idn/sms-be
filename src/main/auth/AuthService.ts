@@ -1,6 +1,6 @@
-import UserService from "../user/UserService";
+import UserService from "../userManagement/user/UserService";
 import {comparePassword, createToken} from "./AuthUtils";
-import {RoleEntity} from "../role/RoleEntity";
+import RoleModel from "../userManagement/role/RoleModel";
 
 class AuthService {
 
@@ -17,7 +17,7 @@ class AuthService {
                 if (! await comparePassword(data.password, cekUser.password))
                     return reject({status: 400, errorMsg: "Invalid password"});
                 const {password, roleId, ...user} = cekUser;
-                const {_id, ...role} = roleId as RoleEntity;
+                const {_id, ...role} = roleId as RoleModel;
                 const token = {
                     token: createToken({
                         userId: cekUser._id,

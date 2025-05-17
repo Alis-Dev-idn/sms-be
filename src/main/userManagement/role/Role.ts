@@ -1,8 +1,7 @@
 import {model, Schema} from "mongoose";
-import {RoleEntity} from "./RoleEntity";
+import RoleModel from "./RoleModel";
 
-
-export default model<RoleEntity>("role", new Schema<RoleEntity>({
+export default model<RoleModel>("role", new Schema<RoleModel>({
     name: {
         type: String,
         required: true,
@@ -24,3 +23,15 @@ export default model<RoleEntity>("role", new Schema<RoleEntity>({
 }, {
     timestamps: true
 }));
+
+// import {ObjectId} from "mongoose";
+// import MenuModel from "../menu/MenuModel";
+//
+
+//
+// export interface RoleEntity {
+//     _id?: ObjectId;
+//     name: string;
+//     menuId?: ObjectId[] | MenuModel[];
+//     permissions: RolePermission[];
+// }

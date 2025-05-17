@@ -1,21 +1,20 @@
-import UserService from "./user/UserService";
+import UserService from "../userManagement/user/UserService";
 import jsonwebtoken from "jsonwebtoken";
 import {IdValidate} from "./Database";
 import {Request, Response, NextFunction} from "express";
-import {RolePermission} from "./role/RoleEntity";
+import {Roles} from "../userManagement/role/RoleModel";
 
 export interface TokenPayload {
     userId: string;
     role: string;
-    permissions: string[];
-    menuAccess: string[];
+    permissions: Roles;
     exp?: number;
     iat?: number;
 }
 
 class Middleware {
 
-    public async tokenAccess(req: Request, res: Response, next: NextFunction) {
+    public async access(req: Request, res: Response, next: NextFunction) {
         try {
             let token = req.headers["authorization"];
             if(!token)
@@ -40,7 +39,7 @@ class Middleware {
             });
 
             req._id = decode.userId;
-            req.permission = decode.permissions as RolePermission[];
+            req.permission = decode.permissions as Roles;
             next();
         } catch (error) {
             console.log("Error: ", error);

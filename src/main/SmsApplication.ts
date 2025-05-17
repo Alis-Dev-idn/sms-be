@@ -6,12 +6,14 @@ import http from "http";
 import morgan from "morgan";
 import express, {Express} from "express";
 import fileUpload from "express-fileupload";
-import Database from "./Database";
-import User from "./user/User";
-import Role from "./role/Role";
-import Menu from "./menu/Menu";
-import Auth from "./auth/Auth";
-import Middleware from "./Middleware";
+import swaggerUi from "swagger-ui-express";
+import Database from "./config/Database";
+import Middleware from "./config/Middleware";
+import SwaggerConfig from "./config/SwaggerConfig";
+import RoleController from "./userManagement/role/RoleController";
+import UserController from "./userManagement/user/UserController";
+import MenuController from "./userManagement/menu/MenuController";
+import AuthController from "./auth/AuthController";
 
 class SmsApplication {
 
@@ -38,10 +40,11 @@ class SmsApplication {
             }
         }));
 
-        app.use("/api/v1/user", Middleware.tokenAccess, User());
-        app.use("/api/v1/auth", Auth());
-        app.use("/api/v1/role", Middleware.tokenAccess, Role());
-        app.use("/api/v1/menu", Middleware.tokenAccess, Menu());
+        app.use("/api/v1/auth", AuthController());
+        app.use("/api/v1/user", Middleware.access, UserController());
+        app.use("/api/v1/role", Middleware.access, RoleController());
+        app.use("/api/v1/menu", Middleware.access, MenuController());
+        app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 
         app.use((req, res) => {
             res.status(404).json({
