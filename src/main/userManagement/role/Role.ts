@@ -23,15 +23,3 @@ export default model<RoleModel>("role", new Schema<RoleModel>({
 }, {
     timestamps: true
 }));
-
-// import {ObjectId} from "mongoose";
-// import MenuModel from "../menu/MenuModel";
-//
-
-//
-// export interface RoleEntity {
-//     _id?: ObjectId;
-//     name: string;
-//     menuId?: ObjectId[] | MenuModel[];
-//     permissions: RolePermission[];
-// }

@@ -3,7 +3,6 @@ import UserService from "./UserService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
 import {HasPermission, RolePermission} from "../role/RoleModel";
 
-
 const router = Router();
 
 export default (): Router => {
@@ -37,22 +36,3 @@ export default (): Router => {
 
     return router;
 }
-
-// class UserController {
-//
-//     public get(permission: Role): RequestHandler {
-//         return (req, res) => {
-//             // if (!req.permission || !req.permission.some((perm) => permission.includes(perm)))
-//             //     res.status(403).json({ error: "Permission denied" });
-//
-//             if(!HasPermission(permission, RolePermission.READ))
-//                 return res.status(403).json({ error: "Permission denied" });
-//
-//             UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})
-//                 .then(result => SendOk(res, result))
-//                 .catch(error => SendError(res, error))
-//         }
-//     }
-// }
-//
-// export default new UserController();
