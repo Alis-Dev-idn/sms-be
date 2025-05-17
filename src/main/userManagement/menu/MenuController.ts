@@ -20,6 +20,39 @@ export default (): Router => {
      *     responses:
      *       200:
      *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      total:
+     *                          type: number
+     *                          description: Total number of menus
+     *                          example: 1
+     *                      data:
+     *                          type: array
+     *                          items:
+     *                              type: object
+     *                              properties:
+     *                                  _id:
+     *                                     type: string
+     *                                     example: 1234567890abcdef12345678
+     *                                     description: ID of the menu
+     *                                  name:
+     *                                     type: string
+     *                                     example: Menu 1
+     *                                     description: Name of the menu
+     *                                  createdAt:
+     *                                     type: string
+     *                                     example: 2023-01-01T00:00:00.000Z
+     *                                     description: Date of creation
+     *                                  updatedAt:
+     *                                     type: string
+     *                                     example: 2023-01-01T00:00:00.000Z
+     *                                     description: Date of update
+     *
+     *
+     *
      */
     router.get("/", (req, res) => {
         if (!req.permission)
@@ -45,9 +78,37 @@ export default (): Router => {
      *       - Menu
      *     security:
      *       - bearerAuth: []
+     *     requestBody:
+     *      required: true
+     *      content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      name:
+     *                          type: string
+     *                          example: Menu 1
+     *                          description: Name of the menu
      *     responses:
      *       200:
      *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                          type: object
+     *                          properties:
+     *                              _id:
+     *                                  type: string
+     *                                  example: 1234567890abcdef12345678
+     *                                  description: ID of the menu
+     *                              name:
+     *                                  type: string
+     *                                  example: Menu 1
+     *                                  description: Name of the menu
+     *
      */
     router.post("/", (req, res) => {
         if (!req.permission)

@@ -21,7 +21,7 @@ export default (): Router => {
      *           schema:
      *             type: object
      *             properties:
-     *               username:
+     *               userName:
      *                 type: string
      *               password:
      *                 type: string
@@ -31,7 +31,24 @@ export default (): Router => {
      *
      *     responses:
      *       200:
-     *         description: Login OK
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                          type: object
+     *                          properties:
+     *                              token:
+     *                                  type: string
+     *                                  example: 1234567890abcdef12345678
+     *                                  description: Token for authentication
+     *                              refreshToken:
+     *                                  type: string
+     *                                  example: 1234567890abcdef12345678
+     *                                  description: Refresh token for authentication
+     *
      */
     router.post("/login",(req, res) => {
         const {error} = joiUserLogin.validate(req.body);
