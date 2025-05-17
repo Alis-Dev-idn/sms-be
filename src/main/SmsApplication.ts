@@ -45,13 +45,7 @@ class SmsApplication {
         app.use("/api/v1/role", Middleware.access, RoleController());
         app.use("/api/v1/menu", Middleware.access, MenuController());
 
-        app.use('/api/v1/docs/*', (req, res, next) => {
-            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-            res.setHeader('Pragma', 'no-cache');
-            res.setHeader('Expires', '0');
-            next();
-        });
-        app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
+        app.use("/api/v1/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 
         app.use((req, res) => {
             res.status(404).json({
