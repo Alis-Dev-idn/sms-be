@@ -1,7 +1,7 @@
 import {Router} from "express";
 import UserService from "./UserService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
-import {HasPermission, RolePermission} from "../role/RoleModel";
+import {HasPermission} from "../role/RoleModel";
 
 const router = Router();
 
@@ -12,7 +12,7 @@ export default (): Router => {
      *   get:
      *     summary: Get all users
      *     tags:
-     *       - Get-Users
+     *       - User
      *     security:
      *       - bearerAuth: []
      *     responses:
@@ -20,13 +20,10 @@ export default (): Router => {
      *         description: Daftar semua user
      */
     router.get("/", (req, res) => {
-        // if (!req.permission || !req.permission.some((perm) => permission.includes(perm)))
-        //     res.status(403).json({ error: "Permission denied" });
-
         if (!req.permission)
             return res.status(403).json({error: "Permission denied"});
 
-        if (!HasPermission(req.permission, RolePermission.READ))
+        if (!HasPermission(req.permission))
             return res.status(403).json({error: "Permission denied"});
 
         UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})

@@ -8,25 +8,15 @@ export enum RolePermission {
     UPDATE = "update"
 }
 
-export enum Roles {
-    ADMIN = "admin",
-    USER = "user",
-}
+export const RolePermissionList: string[] = [
+    RolePermission.READ,
+    RolePermission.WRITE,
+    RolePermission.DELETE,
+    RolePermission.UPDATE
+]
 
-export const RolePermissions : Record<Roles, RolePermission[]> = {
-    [Roles.ADMIN]: [
-        RolePermission.READ,
-        RolePermission.WRITE,
-        RolePermission.DELETE,
-        RolePermission.UPDATE,
-    ],
-    [Roles.USER]: [
-        RolePermission.READ
-    ],
-}
-
-export const HasPermission = (role: Roles, permission: RolePermission): boolean => {
-    return RolePermissions[role].includes(permission);
+export const HasPermission = (permission: string[]): boolean => {
+    return permission.every(permission => RolePermissionList.includes(permission));
 }
 
 export default interface RoleModel {

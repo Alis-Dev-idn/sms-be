@@ -7,7 +7,33 @@ import {SendError, SendOk} from "../helper/ResponseHelper";
 const router = Router();
 
 export default (): Router => {
-    router.post("/",(req, res) => {
+    /**
+     * @swagger
+     * /auth/login:
+     *   post:
+     *     summary: Login
+     *     tags:
+     *       - Auth
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               username:
+     *                 type: string
+     *               password:
+     *                 type: string
+     *             required:
+     *               - username
+     *               - password
+     *
+     *     responses:
+     *       200:
+     *         description: Login OK
+     */
+    router.post("/login",(req, res) => {
         const {error} = joiUserLogin.validate(req.body);
         if (error)
             return res.status(400).json({error: error.details[0].message});

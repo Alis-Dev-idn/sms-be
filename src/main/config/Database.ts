@@ -26,7 +26,7 @@ class Database {
                 const role = await RoleService.createRole({
                     name: "Admin",
                     menuId: [],
-                    permissions: [RolePermission.READ, RolePermission.WRITE, RolePermission.DELETE, RolePermission.UPDATE]
+                    permissions: [RolePermission.WRITE, RolePermission.READ, RolePermission.UPDATE, RolePermission.DELETE]
                 });
                 if (numberUser === 0) {
                     await UserService.createUser({

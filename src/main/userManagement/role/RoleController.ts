@@ -7,6 +7,7 @@ import {HasPermission, RolePermission} from "./RoleModel";
 const router = Router();
 
 export default (): Router => {
+
     /**
      * @swagger
      * /role:
@@ -28,26 +29,12 @@ export default (): Router => {
      *                   type: array
      *                   items:
      *                     type: object
-     *                     properties:
-     *                       _id:
-     *                         type: string
-     *                         example: 68228903ec49be4f847c155d
-     *                       name:
-     *                         type: string
-     *                         example: Admin
-     *                       menuId:
-     *                         type: array
-     *                         example: ["menu1", "menu2"]
-     *                       permission:
-     *                         type: array
-     *                         example: [read, write]
-     *
      */
     router.get("/", (req, res) => {
         if(!req.permission)
             return res.status(403).json({ error: "Permission denied" });
 
-        if(!HasPermission(req.permission, RolePermission.READ))
+        if(!HasPermission(req.permission))
             return res.status(403).json({ error: "Permission denied" });
 
         RoleService.getAllRole({__v: 0})
@@ -58,34 +45,16 @@ export default (): Router => {
             });
     });
 
+
     /**
      * @swagger
      * /role:
      *   post:
-     *     summary: Create a new role
+     *     summary: Get all roles
      *     tags:
      *       - Roles
      *     security:
      *       - bearerAuth: []
-     *     requestBody:
-     *        required: true
-     *        content:
-     *          application/json:
-     *              schema:
-     *                  type: object
-     *                  properties:
-     *                      data:
-     *                          type: object
-     *                          properties:
-     *                              name:
-     *                                  type: string
-     *                                  example: Admin
-     *                              menuId:
-     *                                  type: array
-     *                                  example: [68228903ec49be4f847c154a, 68228903ec49be4f847c156t]
-     *                              permissions:
-     *                                  type: array
-     *                                  example: [read, write, delete, update]
      *     responses:
      *       200:
      *         description: Success
@@ -98,26 +67,12 @@ export default (): Router => {
      *                   type: array
      *                   items:
      *                     type: object
-     *                     properties:
-     *                       _id:
-     *                         type: string
-     *                         example: 68228903ec49be4f847c155d
-     *                       name:
-     *                         type: string
-     *                         example: Admin
-     *                       menuId:
-     *                         type: array
-     *                         example: ["menu1", "menu2"]
-     *                       permission:
-     *                         type: array
-     *                         example: [read, write]
-     *
      */
     router.post("/", (req, res) => {
         if(!req.permission)
             return res.status(403).json({ error: "Permission denied" });
 
-        if(!HasPermission(req.permission, RolePermission.READ))
+        if(!HasPermission(req.permission))
             return res.status(403).json({ error: "Permission denied" });
 
         RoleService.createRole(req.body)
