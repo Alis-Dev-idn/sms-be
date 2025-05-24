@@ -30,9 +30,9 @@ class Database {
                 });
                 if (numberUser === 0) {
                     await UserService.createUser({
-                        fullName: "Admin",
-                        userName: "admin",
-                        password: "admin",
+                        fullName: process.env.DEFAULT_ACCOUNT_FULLNAME || "Admin",
+                        userName: process.env.DEFAULT_ACCOUNT_USERNAME || "admin",
+                        password: process.env.DEFAULT_ACCOUNT_PASSWORD || "admin123456",
                         roleId: role._id as ObjectId,
                     });
                 }
