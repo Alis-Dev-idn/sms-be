@@ -8,14 +8,13 @@ import express, {Express, Router} from "express";
 import fileUpload from "express-fileupload";
 import swaggerUi from "swagger-ui-express";
 import Database from "./config/Database";
-import Middleware from "./config/Middleware";
 import SwaggerConfig from "./config/SwaggerConfig";
 import RoleController from "./userManagement/role/RoleController";
 import UserController from "./userManagement/user/UserController";
 import MenuController from "./userManagement/menu/MenuController";
 import AuthController from "./auth/AuthController";
 import BranchController from "./bispro/branch/BranchController";
-import StrockController from "./bispro/stock/StockController";
+import StockController from "./bispro/stock/StockController";
 import StockTransactionController from "./bispro/stockTransaction/StockTransactionController";
 
 class SmsApplication {
@@ -62,7 +61,7 @@ class SmsApplication {
         router.use("/role", RoleController());
         router.use("/menu", MenuController());
         router.use("/branch", BranchController());
-        router.use("/stock", StrockController());
+        router.use("/stock", StockController());
         router.use("/stock-transaction", StockTransactionController);
         router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 

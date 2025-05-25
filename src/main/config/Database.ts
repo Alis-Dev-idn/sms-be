@@ -43,7 +43,6 @@ class Database {
     }
 
     public connect(server: () => void): void {
-        console.log(RolePermissionList)
         mongoose.connect(this.uri, {
             auth: {
                 username: this.username,

@@ -1,4 +1,4 @@
-import {ObjectId, Schema} from "mongoose";
+import {ObjectId} from "mongoose";
 import RoleModel from "../role/RoleModel";
 
 export default interface UserModel {

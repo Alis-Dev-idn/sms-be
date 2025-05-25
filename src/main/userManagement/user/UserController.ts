@@ -1,7 +1,7 @@
 import {Router} from "express";
 import UserService from "./UserService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
-import {HasPermission, RolePermission} from "../role/RoleModel";
+import {RolePermission} from "../role/RoleModel";
 import Middleware from "../../config/Middleware";
 
 const router = Router();
