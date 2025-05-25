@@ -3,3 +3,7 @@
 .idea
 build
 node_modules
+
+buildApp
+
+tsconfig.tsbuildinfo
