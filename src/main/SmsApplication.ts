@@ -41,9 +41,9 @@ class SmsApplication {
         }));
 
         app.use("/api/v1/auth", AuthController());
-        app.use("/api/v1/user", Middleware.access, UserController());
-        app.use("/api/v1/role", Middleware.access, RoleController());
-        app.use("/api/v1/menu", Middleware.access, MenuController());
+        app.use("/api/v1/user", UserController());
+        app.use("/api/v1/role", RoleController());
+        app.use("/api/v1/menu", MenuController());
 
         app.use("/api/v1/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 

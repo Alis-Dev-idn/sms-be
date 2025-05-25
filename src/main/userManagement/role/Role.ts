@@ -1,5 +1,5 @@
 import {model, Schema} from "mongoose";
-import RoleModel from "./RoleModel";
+import RoleModel, {RolePermissionList} from "./RoleModel";
 
 export default model<RoleModel>("role", new Schema<RoleModel>({
     name: {
@@ -16,7 +16,7 @@ export default model<RoleModel>("role", new Schema<RoleModel>({
     permissions: {
         type: [{
             type: String,
-            enum: ["read", "write", "delete", "update"]
+            enum: RolePermissionList
         }],
         required: true,
     }

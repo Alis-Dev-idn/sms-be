@@ -1,7 +1,8 @@
 import {Router} from "express";
 import UserService from "./UserService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
-import {HasPermission} from "../role/RoleModel";
+import {HasPermission, RolePermission} from "../role/RoleModel";
+import Middleware from "../../config/Middleware";
 
 const router = Router();
 
@@ -53,7 +54,7 @@ export default (): Router => {
      *
      *
      */
-    router.get("/", (req, res) => {
+    router.get("/", Middleware.hasAccess(RolePermission.ADMIN_READ), (req, res) => {
         if (!req.permission)
             return res.status(403).json({error: "Permission denied"});
 

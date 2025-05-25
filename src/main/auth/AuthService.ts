@@ -22,12 +22,13 @@ class AuthService {
                 const token = {
                     token: createToken({
                         userId: cekUser._id,
-                        role: role.name,
-                        permissions: role.permissions,
-                        menuAccess: role.menuId,
+                        // role: role.name,
+                        // permissions: role.permissions,
+                        // menuAccess: role.menuId,
                     }, process.env.JWT_EXPIRES_IN || "1"),
                     refreshToken: createToken({
                         userId: cekUser._id,
+                        refresh: true,
                     }, process.env.JWT_REFRESH_EXPIRES_IN || "7")
                 }
                 resolve(token);

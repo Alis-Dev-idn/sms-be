@@ -1,8 +1,8 @@
 import UserService from "../userManagement/user/UserService";
 import jsonwebtoken from "jsonwebtoken";
 import {IdValidate} from "./Database";
-import {Request, Response, NextFunction} from "express";
-import {RolePermission} from "../userManagement/role/RoleModel";
+import {RequestHandler} from "express";
+import RoleModel, {hastPermission, RolePermission} from "../userManagement/role/RoleModel";
 
 export interface TokenPayload {
     userId: string;
@@ -14,37 +14,48 @@ export interface TokenPayload {
 
 class Middleware {
 
-    public async access(req: Request, res: Response, next: NextFunction) {
-        try {
-            let token = req.headers["authorization"];
-            if(!token)
-                return res.status(401).json({error: "Unauthorized"});
-            token = token.split(" ")[1];
+    private access(...allowRole: RolePermission[]): RequestHandler {
+        return async (req, res, next) => {
+            try {
+                let token = req.headers["authorization"];
+                if(!token)
+                    return res.status(401).json({error: "Unauthorized"});
+                token = token.split(" ")[1];
 
-            const decode = jsonwebtoken.decode(token) as TokenPayload;
-            if(decode === null)
-                return res.status(401).json({error: "Unauthorized"});
+                const decode = jsonwebtoken.decode(token) as TokenPayload;
+                if(decode === null)
+                    return res.status(401).json({error: "Unauthorized"});
 
-            if(!IdValidate(decode.userId))
-                return res.status(401).json({error: "Unauthorized"});
+                if(!IdValidate(decode.userId))
+                    return res.status(401).json({error: "Unauthorized"});
 
-            if(decode.exp && decode.exp < Math.floor(Date.now() / 1000))
-                return res.status(401).json({error: "Token expired"});
+                if(decode.exp && decode.exp < Math.floor(Date.now() / 1000))
+                    return res.status(401).json({error: "Token expired"});
 
-            if(!await UserService.getUserById(decode.userId))
-                return res.status(401).json({error: "Unauthorized"});
+                const cekUser = await UserService.getUserById(decode.userId)
 
-            jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY || "", {
-                algorithms: ["HS256"]
-            });
+                if(!cekUser)
+                    return res.status(401).json({error: "Unauthorized"});
 
-            req._id = decode.userId;
-            req.permission = decode.permissions as RolePermission[];
-            next();
-        } catch (error) {
-            console.log("Error: ", error);
-            res.status(403).json({error: "Forbidden"});
+                jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY || "", {
+                    algorithms: ["HS256"]
+                });
+
+                if(!hastPermission(allowRole as string[], (cekUser.roleId as RoleModel).permissions))
+                    return res.status(403).json({error: "Forbidden"});
+
+                req._id = cekUser._id? cekUser._id.toString() : undefined;
+                req.permission = (cekUser.roleId as RoleModel).permissions;
+                next();
+            } catch (error) {
+                console.log("Error: ", error);
+                res.status(403).json({error: "Forbidden"});
+            }
         }
+    }
+
+    public hasAccess(...access: RolePermission[]): RequestHandler {
+        return this.access(...access);
     }
 }
 

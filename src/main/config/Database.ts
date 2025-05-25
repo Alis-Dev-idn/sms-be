@@ -1,7 +1,7 @@
 import mongoose, {ObjectId} from 'mongoose';
 import UserService from "../userManagement/user/UserService";
 import RoleService from "../userManagement/role/RoleService";
-import {RolePermission} from "../userManagement/role/RoleModel";
+import {RolePermission, RolePermissionList} from "../userManagement/role/RoleModel";
 
 export const IdValidate = (id: string): boolean => {
     return mongoose.Types.ObjectId.isValid(id);
@@ -26,7 +26,7 @@ class Database {
                 const role = await RoleService.createRole({
                     name: "Admin",
                     menuId: [],
-                    permissions: [RolePermission.WRITE, RolePermission.READ, RolePermission.UPDATE, RolePermission.DELETE]
+                    permissions: RolePermissionList as RolePermission[]
                 });
                 if (numberUser === 0) {
                     await UserService.createUser({
@@ -43,6 +43,7 @@ class Database {
     }
 
     public connect(server: () => void): void {
+        console.log(RolePermissionList)
         mongoose.connect(this.uri, {
             auth: {
                 username: this.username,

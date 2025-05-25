@@ -84,6 +84,7 @@ class RoleService {
                 const role = await this.model.create(data);
                 resolve(role);
             } catch (error) {
+                console.log("Error creating role: ", error);
                 reject({status: 500, errorMsg: "Internal Server Error"});
             }
         });
