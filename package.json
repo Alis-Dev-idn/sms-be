@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node ./src/App.ts",
     "dev": "nodemon",
-    "build": "npx tsc --build && pkg --compress GZip package.json"
+    "build": "node build.js"
   },
   "keywords": [],
   "author": "lidya-dev",
