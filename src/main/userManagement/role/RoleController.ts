@@ -1,7 +1,9 @@
 import {Router} from "express";
 import RoleService from "./RoleService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
-import {HasPermission, RolePermission} from "./RoleModel";
+import {HasPermission, RolePermission, RolePermissionList} from "./RoleModel";
+import Middleware from "../../config/Middleware";
+import {AnyExpression} from "mongoose";
 
 
 const router = Router();
@@ -17,6 +19,22 @@ export default (): Router => {
      *       - Roles
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: permissions
+     *         schema:
+     *            type: number
+     *         required: false
+     *         description: Include permissions in the response (1 for true, 0 or null for false)
+     *         example: 1
+     *       - in: query
+     *         name: menuId
+     *         schema:
+     *              type: number
+     *         required: false
+     *         description: Include menuId in the response (1 for true, 0 or null for false)
+     *         example: 1
+     *
      *     responses:
      *       200:
      *         description: Success
@@ -66,20 +84,74 @@ export default (): Router => {
      *
      *
      */
-    router.get("/", (req, res) => {
-        if(!req.permission)
-            return res.status(403).json({ error: "Permission denied" });
+    router.get(
+        "/",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_READ
+        ),
+        (req, res) => {
+            const permissions = req.query.permissions;
+            const menuId = req.query.menuId;
 
-        if(!HasPermission(req.permission))
-            return res.status(403).json({ error: "Permission denied" });
+            const projection: AnyExpression = {
+                __v: 0,
+                permissions: 0,
+                menuId: 0
+            }
 
-        RoleService.getAllRole({__v: 0})
-            .then((result) => SendOk(res, result))
-            .catch((error) => {
-                console.log(error);
-                SendError(res, error)
-            });
+            if(permissions && !isNaN(Number(permissions)) && Number(permissions) == 1)
+                delete projection.permissions;
+
+            if(menuId && !isNaN(Number(menuId)) && Number(menuId) == 1)
+                delete projection.menuId;
+
+            RoleService.getAllRole(projection)
+                .then((result) => SendOk(res, result))
+                .catch((error) => {
+                    console.log(error);
+                    SendError(res, error)
+                });
     });
+
+    /**
+     * @swagger
+     * /role/permission:
+     *   get:
+     *     summary: Get all role permissions
+     *     tags:
+     *       - Roles
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                          type: array
+     *                          items:
+     *                              type: object
+     *                              properties:
+     *                                  "user read":
+     *                                      type: string
+     *                                      description: Permission name
+     *                                      example: "user:read"
+     */
+    router.get(
+        "/permission",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_READ
+        ),
+        (req, res) => {
+            const objRolePermission: Record<string, string> = {};
+            RolePermissionList.forEach((permission) => {
+                objRolePermission[permission.replace(":", " ")] = permission;
+            });
+            SendOk(res, objRolePermission);
+        });
 
 
     /**
@@ -147,13 +219,12 @@ export default (): Router => {
      *                              description: Updated at
      *                              example: 2023-01-01T00:00:00.000Z
      */
-    router.post("/", (req, res) => {
-        if(!req.permission)
-            return res.status(403).json({ error: "Permission denied" });
-
-        if(!HasPermission(req.permission))
-            return res.status(403).json({ error: "Permission denied" });
-
+    router.post(
+        "/",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_CREATE
+        ),
+        (req, res) => {
         RoleService.createRole(req.body)
             .then((result) => SendOk(res, result))
             .catch((error) => SendError(res, error));

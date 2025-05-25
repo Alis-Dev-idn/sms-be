@@ -54,13 +54,12 @@ export default (): Router => {
      *
      *
      */
-    router.get("/", Middleware.hasAccess(RolePermission.ADMIN_READ), (req, res) => {
-        if (!req.permission)
-            return res.status(403).json({error: "Permission denied"});
-
-        if (!HasPermission(req.permission))
-            return res.status(403).json({error: "Permission denied"});
-
+    router.get(
+        "/",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_READ
+        ),
+        (req, res) => {
         UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})
             .then(result => SendOk(res, result))
             .catch(error => SendError(res, error))

@@ -4,7 +4,7 @@ config();
 import cors from "cors";
 import http from "http";
 import morgan from "morgan";
-import express, {Express} from "express";
+import express, {Express, Router} from "express";
 import fileUpload from "express-fileupload";
 import swaggerUi from "swagger-ui-express";
 import Database from "./config/Database";
@@ -14,6 +14,9 @@ import RoleController from "./userManagement/role/RoleController";
 import UserController from "./userManagement/user/UserController";
 import MenuController from "./userManagement/menu/MenuController";
 import AuthController from "./auth/AuthController";
+import BranchController from "./bispro/branch/BranchController";
+import StrockController from "./bispro/stock/StockController";
+import StockTransactionController from "./bispro/stockTransaction/StockTransactionController";
 
 class SmsApplication {
 
@@ -40,21 +43,30 @@ class SmsApplication {
             }
         }));
 
-        app.use("/api/v1/auth", AuthController());
-        app.use("/api/v1/user", UserController());
-        app.use("/api/v1/role", RoleController());
-        app.use("/api/v1/menu", MenuController());
-
-        app.use("/api/v1/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
+        app.use("/api/v1", this.router());
 
         app.use((req, res) => {
-            res.status(404).json({
+            res.status(403).json({
                 path: req.path,
-                error: "Not Found"
+                error: "Forbidden",
             })
         })
-
         return app;
+    }
+
+    private router(): Router {
+        const router = Router();
+
+        router.use("/auth", AuthController());
+        router.use("/user", UserController());
+        router.use("/role", RoleController());
+        router.use("/menu", MenuController());
+        router.use("/branch", BranchController());
+        router.use("/stock", StrockController());
+        router.use("/stock-transaction", StockTransactionController);
+        router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
+
+        return router;
     }
 
     public start(): void {

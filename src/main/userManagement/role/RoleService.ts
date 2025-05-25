@@ -44,7 +44,7 @@ class RoleService {
                     total: [{$count: "total"}],
                     data: [
                         {$sort: {createdAt: -1}},
-                        {$project: projection}
+                        {$project: {...projection}}
                     ]
                 }
             },

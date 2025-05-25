@@ -1,7 +1,8 @@
 import {Router} from "express";
 import MenuService from "./MenuService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
-import {HasPermission} from "../role/RoleModel";
+import {RolePermission} from "../role/RoleModel";
+import Middleware from "../../config/Middleware";
 
 
 const router = Router();
@@ -54,13 +55,12 @@ export default (): Router => {
      *
      *
      */
-    router.get("/", (req, res) => {
-        if (!req.permission)
-            return res.status(403).json({error: "Permission denied"});
-
-        if(!HasPermission(req.permission))
-            return res.status(403).json({error: "Permission denied"});
-
+    router.get(
+        "/",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_CREATE
+        ),
+        (req, res) => {
         MenuService.getAllMenus({__v: 0})
             .then((result) => SendOk(res, result))
             .catch(error => {
@@ -110,13 +110,12 @@ export default (): Router => {
      *                                  description: Name of the menu
      *
      */
-    router.post("/", (req, res) => {
-        if (!req.permission)
-            return res.status(403).json({error: "Permission denied"});
-
-        if(!HasPermission(req.permission))
-            return res.status(403).json({error: "Permission denied"});
-
+    router.post(
+        "/",
+        Middleware.hasAccess(
+            RolePermission.ADMIN_CREATE
+        ),
+        (req, res) => {
         MenuService.saveMenu(req.body)
             .then((result) => SendOk(res, result))
             .catch(error => SendError(res, error));
