@@ -9,4 +9,6 @@ export default interface UserModel {
     roleId: ObjectId | RoleModel;
     branchId?: ObjectId;
     createdBy?: ObjectId | UserModel;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

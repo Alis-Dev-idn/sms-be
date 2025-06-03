@@ -61,7 +61,16 @@ export default (): Router => {
         ),
         (req, res) => {
         UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})
-            .then(result => SendOk(res, result))
+            .then(result => SendOk(res, result.map(items => {
+                return {
+                    _id: items._id,
+                    fullName: items.fullName,
+                    userName: items.userName,
+                    createdBy: items.createdBy? items.createdBy : {_id: null, fullName: "SYSTEM"},
+                    updatedAt: items.updatedAt,
+                    createdAt: items.createdAt
+                };
+            })))
             .catch(error => SendError(res, error))
     });
 

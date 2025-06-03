@@ -12,7 +12,6 @@ class AuthService {
         return new Promise(async (resolve, reject) => {
             try {
                 const cekUser = await this.userService.getUserByUserName(data.userName);
-                console.log("cekUser: ", cekUser);
                 if (!cekUser)
                     return reject({status: 400, errorMsg: "User not found"});
                 if (! await comparePassword(data.password, cekUser.password))

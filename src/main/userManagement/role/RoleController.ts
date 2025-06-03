@@ -71,7 +71,7 @@ export default (): Router => {
      *                                          description: List of menu IDs
      *                                      permission:
      *                                          type: array
-     *                                          example: [read, write]
+     *                                          example: [user:read, admin:write]
      *                                          description: List of permissions
      *                                      createdAt:
      *                                          type: string
@@ -135,9 +135,13 @@ export default (): Router => {
      *                          items:
      *                              type: object
      *                              properties:
-     *                                  "user read":
+     *                                  "name":
      *                                      type: string
      *                                      description: Permission name
+     *                                      example: "USER READ"
+     *                                  "value":
+     *                                      type: string
+     *                                      description: Permission value
      *                                      example: "user:read"
      */
     router.get(
@@ -146,9 +150,12 @@ export default (): Router => {
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
-            const objRolePermission: Record<string, string> = {};
+            const objRolePermission: Array<Record<string, string>> = [];
             RolePermissionList.forEach((permission) => {
-                objRolePermission[permission.replace(":", " ")] = permission;
+                const permissionObj: Record<string, string> = {};
+                permissionObj["name"] = permission.replace(":", " ").toUpperCase();
+                permissionObj["value"] = permission;
+                objRolePermission.push(permissionObj);
             });
             SendOk(res, objRolePermission);
         });
@@ -180,7 +187,7 @@ export default (): Router => {
      *                          description: List of menu IDs
      *                      permission:
      *                          type: array
-     *                          example: [read, write]
+     *                          example: [user:read, admin:write]
      *                          description: List of permissions
      *
      *     responses:
@@ -208,7 +215,7 @@ export default (): Router => {
      *                              description: List of menu IDs
      *                          permission:
      *                              type: array
-     *                              example: [read, write]
+     *                              example: [user:read, admin:write]
      *                              description: List of permissions
      *                          createdAt:
      *                              type: string
