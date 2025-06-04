@@ -1,7 +1,7 @@
 import {Router} from "express";
 import Security from "../../config/Security";
 import {RolePermission} from "../../userManagement/role/RoleModel";
-import {SendOk} from "../../helper/ResponseHelper";
+import {SendOk} from "../../config/ResponseMessage";
 
 
 export default (): Router => {

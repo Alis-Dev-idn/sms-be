@@ -1,11 +1,13 @@
-import mongoose, {ObjectId} from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 import UserService from "../userManagement/user/UserService";
 import RoleService from "../userManagement/role/RoleService";
-import RoleModel, {RolePermission, RolePermissionList} from "../userManagement/role/RoleModel";
+import {RolePermission, RolePermissionList} from "../userManagement/role/RoleModel";
 
 export const IdValidate = (id: string): boolean => {
     return mongoose.Types.ObjectId.isValid(id);
 }
+
+export type IObjectId = Types.ObjectId;
 
 class Database {
     private uri: string;
@@ -35,7 +37,7 @@ class Database {
                     fullName: process.env.DEFAULT_ACCOUNT_FULLNAME || "Admin",
                     userName: process.env.DEFAULT_ACCOUNT_USERNAME || "admin",
                     password: process.env.DEFAULT_ACCOUNT_PASSWORD || "admin123456",
-                    roleId: role._id as ObjectId,
+                    roleId: role._id as IObjectId,
                 });
             }
         } catch (error) {

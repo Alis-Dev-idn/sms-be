@@ -1,6 +1,6 @@
 import {Router} from "express";
 import UserService from "./UserService";
-import {SendError, SendOk} from "../../helper/ResponseHelper";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import {RolePermission} from "../role/RoleModel";
 import Security from "../../config/Security";
 

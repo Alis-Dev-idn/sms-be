@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {SendOk} from "../../helper/ResponseHelper";
+import {SendOk} from "../../config/ResponseMessage";
 import Security from "../../config/Security";
 import {RolePermission} from "../../userManagement/role/RoleModel";
 

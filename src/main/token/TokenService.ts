@@ -1,8 +1,9 @@
 import Token, {IToken} from "./Token";
 import jsonwebtoken from "jsonwebtoken";
-import mongoose, {DeleteResult, Model, Schema} from "mongoose";
+import mongoose, {DeleteResult, Model} from "mongoose";
 import UserModel from "../userManagement/user/UserModel";
 import UserService from "../userManagement/user/UserService";
+import {IObjectId} from "../config/Database";
 
 
 export default new class TokenService {
@@ -35,7 +36,7 @@ export default new class TokenService {
         return seconds;
     }
 
-    private async createToken(idUser: Schema.Types.ObjectId, exp: string): Promise<IToken> {
+    private async createToken(idUser: IObjectId, exp: string): Promise<IToken> {
         const token = this.generateToken(this.expIn(process.env.JWT_EXPIRES_IN || "1h"));
         const refreshToken =  this.generateToken(this.expIn(process.env.JWT_EXPIRES_IN_REFRESH || "7h"));
 
@@ -66,7 +67,7 @@ export default new class TokenService {
         return this.model.deleteOne({idToken: idToken})
     }
 
-    public async saveToken(idUser: Schema.Types.ObjectId, exp: string): Promise<IToken> {
+    public async saveToken(idUser: IObjectId, exp: string): Promise<IToken> {
         return this.createToken(idUser, exp);
     }
 

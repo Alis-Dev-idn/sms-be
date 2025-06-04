@@ -1,6 +1,6 @@
 import {Router} from "express";
 import RoleService from "./RoleService";
-import {SendError, SendOk} from "../../helper/ResponseHelper";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import {RolePermission, RolePermissionList} from "./RoleModel";
 import Security from "../../config/Security";
 import {AnyExpression} from "mongoose";

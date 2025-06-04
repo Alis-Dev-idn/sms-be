@@ -1,7 +1,7 @@
 import {Router} from "express";
 import authService from "./AuthService";
 import {joiUserLogin} from "../config/joi/UserJoi";
-import {SendError, SendOk} from "../helper/ResponseHelper";
+import {SendError, SendOk} from "../config/ResponseMessage";
 import Security from "../config/Security";
 import {HasPermission, RolePermission} from "../userManagement/role/RoleModel";
 import UserService from "../userManagement/user/UserService";

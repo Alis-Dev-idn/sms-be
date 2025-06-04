@@ -1,15 +1,16 @@
-import {model, ObjectId, Schema} from "mongoose";
+import {model, Schema} from "mongoose";
 import UserModel from "../../userManagement/user/UserModel";
+import {IObjectId} from "../../config/Database";
 
 
 export interface IStock {
-    _id?: ObjectId,
+    _id?: IObjectId,
     name: string,
     qty: number,
     expiryDate: Date,
     stockDate: Date,
-    createdBy: ObjectId | UserModel,
-    updatedBy: ObjectId | UserModel,
+    createdBy: IObjectId | UserModel,
+    updatedBy?: IObjectId | UserModel,
     createdAt?: Date,
     updatedAt?: Date,
 }
@@ -39,7 +40,7 @@ export default model<IStock>("stock", new Schema<IStock>({
     updatedBy: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true,
+        required: false,
     }
 }, {
     timestamps: true,

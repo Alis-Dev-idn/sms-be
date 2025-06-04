@@ -1,4 +1,4 @@
-import {RequestHandler, Request, Response} from "express";
+import {RequestHandler, Request} from "express";
 import RoleModel, {hastPermission, RolePermission} from "../userManagement/role/RoleModel";
 import TokenService from "../token/TokenService";
 import UserModel from "../userManagement/user/UserModel";
