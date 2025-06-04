@@ -33,24 +33,19 @@ export default (): Router => {
      *
      *     responses:
      *       200:
-     *         description: Success
-     *         content:
-     *          application/json:
-     *              schema:
-     *                  type: object
-     *                  properties:
-     *                      data:
-     *                          type: object
-     *                          properties:
-     *                              token:
-     *                                  type: string
-     *                                  example: 1234567890abcdef12345678
-     *                                  description: Token for authentication
-     *                              refreshToken:
-     *                                  type: string
-     *                                  example: 1234567890abcdef12345678
-     *                                  description: Refresh token for authentication
-     *
+     *          description: Success
+     *          content:
+     *              application/json:
+     *                  schema:
+     *                      type: object
+     *                      properties:
+     *                          data:
+     *                              type: object
+     *                              properties:
+     *                                  token:
+     *                                      type: string
+     *                                      example: 1234567890abcdef12345678
+     *                                      description: Token for authentication
      */
     router.post("/login",(req, res) => {
         const {error} = joiUserLogin.validate(req.body);
@@ -144,6 +139,31 @@ export default (): Router => {
      */
     router.get("/logout", Security.revokeToken());
 
+    /**
+     * @swagger
+     * /auth/refresh-token:
+     *   get:
+     *     summary: Refresh Token
+     *     tags:
+     *       - Auth
+     *     security:
+     *      - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                         type: object
+     *                         properties:
+     *                             token:
+     *                                type: string
+     *                                example: 1234567890abcdef12345678
+     *                                description: Token for authentication
+     */
     router.get("/refresh-token", Security.refreshToken())
 
     return router;
