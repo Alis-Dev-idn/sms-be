@@ -1,7 +1,7 @@
 import mongoose, {ObjectId} from 'mongoose';
 import UserService from "../userManagement/user/UserService";
 import RoleService from "../userManagement/role/RoleService";
-import {RolePermission, RolePermissionList} from "../userManagement/role/RoleModel";
+import RoleModel, {RolePermission, RolePermissionList} from "../userManagement/role/RoleModel";
 
 export const IdValidate = (id: string): boolean => {
     return mongoose.Types.ObjectId.isValid(id);
@@ -22,20 +22,21 @@ class Database {
         try {
             const numberUser = await UserService.getTotalUser();
             const numberRole = await RoleService.getTotalRole();
+            let role: any;
             if (numberRole === 0) {
-                const role = await RoleService.createRole({
+                role = await RoleService.createRole({
                     name: "Admin",
                     menuId: [],
                     permissions: RolePermissionList as RolePermission[]
                 });
-                if (numberUser === 0) {
-                    await UserService.createUser({
-                        fullName: process.env.DEFAULT_ACCOUNT_FULLNAME || "Admin",
-                        userName: process.env.DEFAULT_ACCOUNT_USERNAME || "admin",
-                        password: process.env.DEFAULT_ACCOUNT_PASSWORD || "admin123456",
-                        roleId: role._id as ObjectId,
-                    });
-                }
+            }
+            if (numberUser === 0) {
+                await UserService.createUser({
+                    fullName: process.env.DEFAULT_ACCOUNT_FULLNAME || "Admin",
+                    userName: process.env.DEFAULT_ACCOUNT_USERNAME || "admin",
+                    password: process.env.DEFAULT_ACCOUNT_PASSWORD || "admin123456",
+                    roleId: role._id as ObjectId,
+                });
             }
         } catch (error) {
             console.log("Error: ", error);
