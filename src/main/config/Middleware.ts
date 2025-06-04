@@ -30,7 +30,7 @@ class Middleware {
                     return res.status(401).json({error: "Unauthorized"});
 
                 if(decode.exp && decode.exp < Math.floor(Date.now() / 1000))
-                    return res.status(401).json({error: "Token expired"});
+                    return res.status(401).json({error: "Token expired or not valid"});
 
                 const cekUser = await UserService.getUserById(decode.userId)
 

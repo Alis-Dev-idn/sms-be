@@ -15,7 +15,7 @@ class AuthService {
                 if (!cekUser)
                     return reject({status: 400, errorMsg: "User not found"});
                 if (! await comparePassword(data.password, cekUser.password))
-                    return reject({status: 400, errorMsg: "Invalid password"});
+                    return reject({status: 400, errorMsg: "Invalid password or username"});
                 const {password, roleId, ...user} = cekUser;
                 const {_id, ...role} = roleId as RoleModel;
                 const token = {
