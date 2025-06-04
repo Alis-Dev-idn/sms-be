@@ -2,7 +2,7 @@ import {Router} from "express";
 import RoleService from "./RoleService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
 import {RolePermission, RolePermissionList} from "./RoleModel";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 import {AnyExpression} from "mongoose";
 
 
@@ -86,7 +86,7 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
@@ -146,7 +146,7 @@ export default (): Router => {
      */
     router.get(
         "/permission",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
@@ -228,7 +228,7 @@ export default (): Router => {
      */
     router.post(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_CREATE
         ),
         (req, res) => {

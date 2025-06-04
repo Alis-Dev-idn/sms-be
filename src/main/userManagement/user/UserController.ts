@@ -2,7 +2,7 @@ import {Router} from "express";
 import UserService from "./UserService";
 import {SendError, SendOk} from "../../helper/ResponseHelper";
 import {RolePermission} from "../role/RoleModel";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 
 const router = Router();
 
@@ -56,7 +56,7 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {

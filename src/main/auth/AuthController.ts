@@ -2,7 +2,7 @@ import {Router} from "express";
 import authService from "./AuthService";
 import {joiUserLogin} from "../config/joi/UserJoi";
 import {SendError, SendOk} from "../helper/ResponseHelper";
-import Middleware from "../config/Middleware";
+import Security from "../config/Security";
 import {HasPermission, RolePermission} from "../userManagement/role/RoleModel";
 import UserService from "../userManagement/user/UserService";
 
@@ -106,7 +106,7 @@ export default (): Router => {
      *
      *
      */
-    router.post("/register", Middleware.hasAccess(RolePermission.USER_CREATE), (req, res) => {
+    router.post("/register", Security.hasAccess(RolePermission.USER_CREATE), (req, res) => {
         if(!req.permission)
             return res.status(403).json({error: "Forbidden"});
         if(!HasPermission(req.permission))
@@ -122,7 +122,7 @@ export default (): Router => {
     /**
      * @swagger
      * /auth/logout:
-     *   post:
+     *   get:
      *     summary: Logout
      *     tags:
      *       - Auth
@@ -142,9 +142,9 @@ export default (): Router => {
      *                          example: "Logout OK"
      *
      */
-    router.post("/logout", (req, res) => {
-        res.status(200).json({data: "Logout OK"});
-    });
+    router.get("/logout", Security.revokeToken());
+
+    router.get("/refresh-token", Security.refreshToken())
 
     return router;
 }

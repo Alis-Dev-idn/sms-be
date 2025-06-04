@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {SendOk} from "../../helper/ResponseHelper";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 import {RolePermission} from "../../userManagement/role/RoleModel";
 
 
@@ -23,7 +23,7 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.USER_READ,
             RolePermission.ADMIN_READ,
             RolePermission.WORKER_READ
