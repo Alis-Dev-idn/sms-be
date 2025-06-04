@@ -9,12 +9,3 @@ export const hastPassword = async (password: string) => {
 export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
     return bcrypt.compare(password, hash);
 }
-
-export const createToken = (payload: any, expiresIn: string): string => {
-    return jsonwebtoken.sign({
-        ...payload,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * parseInt(expiresIn)),
-    }, process.env.JWT_SECRET_KEY || "", {
-        algorithm: "HS256",
-    });
-}

@@ -8,10 +8,18 @@ import UserService from "../userManagement/user/UserService";
 export default new class TokenService {
     private model: Model<IToken> = Token;
 
+    private generateToken(exp: number): string {
+        return jsonwebtoken.sign({
+            exp: Math.floor(Date.now() / 1000) + exp,
+        }, process.env.JWT_SECRET_KEY || "", {
+            algorithm: "HS256",
+        })
+    }
+
     private expIn(time: string): number {
         const match = time.match(/^(\d+)([hdm])$/); // Regex untuk format waktu
         if (!match)
-            return 0;
+            return 300;
 
         const value = parseInt(match[1], 10);
         const unit = match[2];
@@ -21,23 +29,15 @@ export default new class TokenService {
             case 'h': seconds = value * 3600; break; // Jam ke detik
             case 'd': seconds = value * 86400; break; // Hari ke detik
             case 'm': seconds = value * 60; break; // Menit ke detik
-            default: break;
+            default: seconds = 300; break;
         }
 
         return seconds;
     }
 
     private async createToken(idUser: Schema.Types.ObjectId, exp: string): Promise<IToken> {
-        const token = jsonwebtoken.sign({
-            exp: Math.floor(Date.now() / 1000) + this.expIn(exp),
-        }, process.env.JWT_SECRET_KEY || "", {
-            algorithm: "HS256",
-        });
-        const refreshToken = jsonwebtoken.sign({
-            exp: Math.floor(Date.now() / 1000) + this.expIn("7d"), // Default refresh token expires in 7 days
-        }, process.env.JWT_SECRET_KEY || "", {
-            algorithm: "HS256",
-        })
+        const token = this.generateToken(this.expIn(process.env.JWT_EXPIRES_IN || "1h"));
+        const refreshToken =  this.generateToken(this.expIn(process.env.JWT_EXPIRES_IN_REFRESH || "7h"));
 
         const cekDb = await this.model.findOne({idUser: idUser}).exec();
         if(cekDb) {
@@ -96,11 +96,7 @@ export default new class TokenService {
                 {idToken: idToken}, {
                     idToken: cekToken.idToken,
                     idUser: (cekToken.idUser as UserModel)._id,
-                    tokenValue: jsonwebtoken.sign({
-                        exp: Math.floor(Date.now() / 1000) + this.expIn("1h"), // Default token expires in 1 hour
-                    }, process.env.JWT_SECRET_KEY || "", {
-                        algorithm: "HS256",
-                    }),
+                    tokenValue: this.generateToken(this.expIn(process.env.JWT_EXPIRES_IN || "1h")),
                     refreshTokenValue: cekToken.refreshTokenValue
                 }) : cekToken;
         } catch (err) {

@@ -1,5 +1,5 @@
 import UserService from "../userManagement/user/UserService";
-import {comparePassword, createToken} from "./AuthUtils";
+import {comparePassword} from "./AuthUtils";
 import TokenService from "../token/TokenService";
 
 class AuthService {
