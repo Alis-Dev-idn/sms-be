@@ -1,6 +1,7 @@
-import {Model, AnyExpression} from "mongoose";
+import mongoose, {Model, AnyExpression} from "mongoose";
 import Stock, {IStock} from "./Stock";
 import {joiCreateStock} from "../../config/joi/StockJoi";
+import {IdValidate} from "../../config/Database";
 
 
 export default new class StockService {
@@ -109,5 +110,42 @@ export default new class StockService {
                 reject(error);
             }
         })
+    }
+
+    public async updateStock(
+        id: string,
+        updatedBy: string,
+        newName?: string,
+        newQty?: number,
+        newExpiryDate?: Date,
+    ): Promise<any> {
+        if(!IdValidate(id))
+            throw {status: 400, errorMsg: "Invalid stock ID"};
+
+        const cekId = await this.model.findByIdAndUpdate(id);
+        if(!cekId)
+            throw {status: 404, errorMsg: "Stock not found"};
+
+        const updateData: Partial<IStock> = {};
+        if(newName) updateData.name = newName;
+        if(newQty !== undefined) {
+            if(newQty < 0)
+                throw {status: 400, errorMsg: "Quantity cannot be negative"};
+            updateData.qty = newQty;
+        }
+        if(newExpiryDate) updateData.expiryDate = newExpiryDate;
+        updateData.updatedBy = new mongoose.Types.ObjectId(updatedBy);
+
+        const updatedStock = await this.model.findByIdAndUpdate(id, {
+            ...updateData
+        }, {new: true});
+        if(!updatedStock)
+            throw {status: 404, errorMsg: "Stock not found"};
+        return {
+            _id: updatedStock._id,
+            name : updatedStock.name,
+            qty: updatedStock.qty,
+            expiryDate: updatedStock.expiryDate,
+        };
     }
 }
