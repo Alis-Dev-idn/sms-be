@@ -22,6 +22,57 @@ export default (): Router => {
      *     responses:
      *       200:
      *         description: Stock details fetched successfully
+     *         content:
+     *           application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                          type: array
+     *                          items:
+     *                              type: object
+     *                              properties:
+     *                                  total:
+     *                                      type: number
+     *                                      description: Total number of branches
+     *                                      example: 1
+     *                                  data:
+     *                                      type: array
+     *                                      items:
+     *                                          type: object
+     *                                          properties:
+     *                                              _id:
+     *                                                  type: string
+     *                                                  description: Unique identifier of the stock
+     *                                                  example: 60c72b2f9b1e8d3f4c8b4567
+     *                                              name:
+     *                                                  type: string
+     *                                                  description: Name of the stock
+     *                                                  example: Sample Stock
+     *                                              qty:
+     *                                                  type: number
+     *                                                  description: Quantity of the stock
+     *                                                  example: 100
+     *                                              createdAt:
+     *                                                  type: string
+     *                                                  description: Creation date of the branch
+     *                                                  example: 2023-01-01T00:00:00.000Z
+     *                                              updatedAt:
+     *                                                  type: string
+     *                                                  description: Last update date of the branch
+     *                                                  example: 2023-01-01T00:00:00.000Z
+     *                                              expiryDate:
+     *                                                  type: string
+     *                                                  description: Expiry date of the stock
+     *                                                  example: 2023-01-01T00:00:00.000Z
+     *                                              stockDate:
+     *                                                  type: string
+     *                                                  description: Date when the stock was added
+     *                                                  example: 2023-01-01T00:00:00.000Z
+     *                                              createdBy:
+     *                                                  type: string
+     *                                                  description: ID of the user who created the stock
+     *                                                  example: "ADMIN"
      *       403:
      *         description: Forbidden
      */
@@ -48,6 +99,29 @@ export default (): Router => {
      *     tags: [Stock]
      *     security:
      *      - bearerAuth: []
+     *     requestBody:
+     *      required: true
+     *      content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      name:
+     *                          type: string
+     *                          description: Name of the stock
+     *                          example: "Sample Stock"
+     *                          required: true
+     *                      qty:
+     *                          type: number
+     *                          description: Quantity of the stock
+     *                          example: 100
+     *                          required: true
+     *                      expiryDate:
+     *                          type: string
+     *                          format: date-time
+     *                          description: Expiry date of the stock
+     *                          example: "2024-10-01T00:00:00.000Z"
+     *                          required: true
      *     responses:
      *       200:
      *         description: Stock added successfully
