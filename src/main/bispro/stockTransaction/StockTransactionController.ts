@@ -1,7 +1,8 @@
 import {Router} from "express";
-import {SendOk} from "../../config/ResponseMessage";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import Security from "../../config/Security";
 import {RolePermission} from "../../userManagement/role/RoleModel";
+import StockTransactionService from "./StockTransactionService";
 
 
 export default (): Router => {
@@ -32,7 +33,25 @@ export default (): Router => {
         ),
         (req, res) => {
             // Logic to get stock transaction details
-            SendOk(res, "Stock transaction details fetched successfully");
+            StockTransactionService
+                .listStockTransactions()
+                .then((result) => SendOk(res, result))
+                .catch((err) => SendError(res, err));
+        }
+    )
+
+    router.post(
+        "/add",
+        Security.hasAccess(
+            RolePermission.ADMIN_CREATE,
+            RolePermission.WORKER_CREATE
+        ),
+        (req, res) => {
+            // Logic to add a new stock transaction
+            StockTransactionService
+                .addStockTransaction(req._id || "", req.body)
+                .then((result) => SendOk(res, result))
+                .catch((err) => SendError(res, err));
         }
     )
 
