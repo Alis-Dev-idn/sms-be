@@ -90,6 +90,7 @@ export default (): Router => {
     router.get(
         "/",
         Security.hasAccess(
+            RolePermission.USER_READ,
             RolePermission.ADMIN_READ,
             RolePermission.WORKER_READ
         ),

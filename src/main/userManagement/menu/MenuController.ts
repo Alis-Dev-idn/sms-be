@@ -58,7 +58,7 @@ export default (): Router => {
     router.get(
         "/",
         Security.hasAccess(
-            RolePermission.ADMIN_CREATE
+            RolePermission.ADMIN_READ
         ),
         (req, res) => {
         MenuService.getAllMenus({__v: 0})
