@@ -59,18 +59,18 @@ export default new class StockTransactionService {
                     from: "branches",
                     localField: "branchId",
                     foreignField: "_id",
-                    as: "branchId"
+                    as: "branch"
                 }
             },
             {
                 $unwind: {
-                    path: "$branchId",
+                    path: "$branch",
                     preserveNullAndEmptyArrays: true
                 }
             },
             {
                 $set: {
-                    branchId: "$branchId.name"
+                    branch: "$branch.name"
                 }
             },
             {
@@ -119,6 +119,7 @@ export default new class StockTransactionService {
                         {
                             $project: {
                                 __v: 0,
+                                branchId: 0,
                             }
                         }
                     ]
@@ -181,7 +182,7 @@ export default new class StockTransactionService {
             _id: newTransaction._id,
             name: stock.name,
             qtyOut: newTransaction.qtyOut,
-            requestBy: await this.user.findById(userId).select("fullName"),
+            requestBy: (await this.user.findById(userId).select("fullName") as UserModel).fullName,
             branch: branch.name
         }
     }
