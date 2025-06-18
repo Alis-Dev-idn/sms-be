@@ -5,7 +5,7 @@ const commands = [
     "rimraf ./dist && rimraf ./buildApp",
     "npx tsc --build",
     "pkg --compress GZip --output ./buildApp/sms-be package.json",
-    // "rimraf ./dist"
+    "rimraf ./dist"
 ];
 
 commands.forEach(cmd => {
