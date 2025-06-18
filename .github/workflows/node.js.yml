@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: 🚀 Deploy REST API website on push
 
 on:
@@ -11,56 +8,62 @@ on:
 
 jobs:
   be-deploy:
-
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
+
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v4
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
 
-    - name: 📝 Create Environment Variables
-      run: |
-        touch .env
-        echo EXPRESS_SERVER_PORT=${{secrets.EXPRESS_SERVER_PORT}} >> .env
-        echo SERVER_MONGODB_URI=${{secrets.SERVER_MONGODB_URI}} >> .env
-        echo SERVER_MONGODB_USER=${{secrets.SERVER_MONGODB_USER}} >> .env
-        echo SERVER_MONGODB_PASSWORD=${{secrets.SERVER_MONGODB_PASSWORD}} >> .env
-        echo JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}} >> .env
-        echo JWT_EXPIRES_IN=${{secrets.JWT_EXPIRES_IN}} >> .env
-        echo JWT_EXPIRES_IN_REFRESH=${{secrets.JWT_EXPIRES_IN_REFRESH}} >> .env
-        echo DEFAULT_ACCOUNT_FULLNAME=${{secrets.DEFAULT_ACCOUNT_FULLNAME}} >> .env
-        echo DEFAULT_ACCOUNT_USERNAME=${{secrets.DEFAULT_ACCOUNT_USERNAME}} >> .env
-        echo DEFAULT_ACCOUNT_PASSWORD=${{secrets.DEFAULT_ACCOUNT_PASSWORD}} >> .env
+      - name: 🧱 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: 🗃️ Install dependencies
-      run: npm install
+      - name: 💾 Cache pkg-fetch
+        uses: actions/cache@v3
+        with:
+          path: ~/.pkg-cache
+          key: ${{ runner.os }}-pkg-cache-node18
 
-    - name: 🔨 Build project
-      run: |
-        npx pkg-fetch --platform node18-linux-x64
-        npx pkg-fetch --platform node18-win-x64
-        npm run build
+      - name: 📝 Create .env file
+        run: |
+          touch .env
+          echo EXPRESS_SERVER_PORT=${{secrets.EXPRESS_SERVER_PORT}} >> .env
+          echo SERVER_MONGODB_URI=${{secrets.SERVER_MONGODB_URI}} >> .env
+          echo SERVER_MONGODB_USER=${{secrets.SERVER_MONGODB_USER}} >> .env
+          echo SERVER_MONGODB_PASSWORD=${{secrets.SERVER_MONGODB_PASSWORD}} >> .env
+          echo JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}} >> .env
+          echo JWT_EXPIRES_IN=${{secrets.JWT_EXPIRES_IN}} >> .env
+          echo JWT_EXPIRES_IN_REFRESH=${{secrets.JWT_EXPIRES_IN_REFRESH}} >> .env
+          echo DEFAULT_ACCOUNT_FULLNAME=${{secrets.DEFAULT_ACCOUNT_FULLNAME}} >> .env
+          echo DEFAULT_ACCOUNT_USERNAME=${{secrets.DEFAULT_ACCOUNT_USERNAME}} >> .env
+          echo DEFAULT_ACCOUNT_PASSWORD=${{secrets.DEFAULT_ACCOUNT_PASSWORD}} >> .env
 
-    - name: 📩 Copy file Environment Variables
-      run: cp .env buildApp/.env
+      - name: 📦 Install dependencies
+        run: npm install
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
+      - name: 📥 Pre-fetch pkg binary (optional)
+        run: |
+          echo "Try fetching pkg binary..."
+          npx pkg-fetch --target node18-linux-x64 || echo "Skip prefetch if already exists"
+
+      - name: 🔨 Build project
+        run: npm run build
+
+      - name: 📩 Copy .env to buildApp
+        run: cp .env buildApp/.env
+
+      - name: 📂 Sync buildApp to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: 'buildApp/'
           server-dir: '/sms/be'
           git-ftp-args: '--all'
-
