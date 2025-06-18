@@ -1,15 +1,16 @@
 import {model, ObjectId, Schema} from "mongoose";
 import UserModel from "../../userManagement/user/UserModel";
 import {IBranch} from "../branch/Branch";
+import {IObjectId} from "../../config/Database";
 
 export interface IStockTransaction {
-    _id?: ObjectId,
-    name : string,
+    _id?: IObjectId,
+    name : IObjectId,
     qtyOut: number,
-    requestBy: ObjectId | UserModel,
-    branchId: ObjectId | IBranch,
-    createdBy: ObjectId | UserModel,
-    updatedBy: ObjectId | UserModel,
+    requestBy:  | UserModel,
+    branchId: IObjectId | IBranch,
+    createdBy: IObjectId | UserModel,
+    updatedBy?: IObjectId | UserModel,
     transDate: Date,
     createdAt?: Date,
     updatedAt?: Date,
@@ -17,7 +18,8 @@ export interface IStockTransaction {
 
 export default model<IStockTransaction>("stock_transaction", new Schema<IStockTransaction>({
     name : {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "stock",
         required: true,
     },
     qtyOut: {
@@ -42,7 +44,7 @@ export default model<IStockTransaction>("stock_transaction", new Schema<IStockTr
     updatedBy: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true,
+        required: false,
     },
     transDate: {
         type: Date,

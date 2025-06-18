@@ -62,7 +62,7 @@ class SmsApplication {
         router.use("/menu", MenuController());
         router.use("/branch", BranchController());
         router.use("/stock", StockController());
-        router.use("/stock-transaction", StockTransactionController);
+        router.use("/stock-transaction", StockTransactionController());
         router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 
         return router;

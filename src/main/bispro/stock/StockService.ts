@@ -7,7 +7,7 @@ import {IdValidate} from "../../config/Database";
 export default new class StockService {
     private readonly model: Model<IStock> = Stock;
 
-    public listStocks(projection?: AnyExpression): Promise<{count: number, data: IStock[] }> {
+    public listStocks(projection?: AnyExpression): Promise<{total: number, data: IStock[] }> {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await this.model.aggregate([
@@ -82,7 +82,7 @@ export default new class StockService {
                     }
                 ])
 
-                resolve({count: 0, data: result});
+                resolve({total: 0, data: result});
             } catch (error) {
                 console.error(error);
                 reject(error);

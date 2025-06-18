@@ -19,7 +19,7 @@ export default swaggerJSDoc({
         },
         servers: [
             {
-                url: 'http://localhost:5000/api/v1',
+                url: 'http://localhost:4000/api/v1',
             },{
                 url: 'https://sms.alisdev.my.id/api/v1',
             },
