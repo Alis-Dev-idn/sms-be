@@ -52,7 +52,7 @@ jobs:
       run: cp .env buildApp/.env
 
     - name: 📂 Sync files
-      uses: mKirkland/FTP-Deploy-Action@v4.3.5
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
