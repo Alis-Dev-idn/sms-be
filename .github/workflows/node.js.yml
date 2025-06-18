@@ -66,4 +66,3 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: 'buildApp/'
           server-dir: '/sms/be'
-          git-ftp-args: '--all'
