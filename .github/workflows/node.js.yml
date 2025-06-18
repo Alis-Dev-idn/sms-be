@@ -65,4 +65,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: 'buildApp/'
-          server-dir: '/sms/be'
+          server-dir: 'sms/be/'
