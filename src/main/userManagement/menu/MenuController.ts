@@ -1,8 +1,8 @@
 import {Router} from "express";
 import MenuService from "./MenuService";
-import {SendError, SendOk} from "../../helper/ResponseHelper";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import {RolePermission} from "../role/RoleModel";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 
 
 const router = Router();
@@ -57,8 +57,8 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
-            RolePermission.ADMIN_CREATE
+        Security.hasAccess(
+            RolePermission.ADMIN_READ
         ),
         (req, res) => {
         MenuService.getAllMenus({__v: 0})
@@ -112,7 +112,7 @@ export default (): Router => {
      */
     router.post(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_CREATE
         ),
         (req, res) => {

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node ./src/App.ts",
     "dev": "nodemon",
-    "build": "node build.js"
+    "build": "ts-node ./src/scripts/GenerateSwagger.ts && node build.js"
   },
   "keywords": [],
   "author": "lidya-dev",
@@ -45,14 +45,14 @@
   "pkg": {
     "assets": [
       "./node_modules/**/*",
-      "./dist/**/*"
+      "./dist/**/*",
+      "swagger.json"
     ],
     "externals": [
       "axios"
     ],
     "targets": [
-      "node18-linux-x64",
-      "node18-win-x64"
+      "node18-linux-x64"
     ],
     "outputPath": "buildApp"
   }

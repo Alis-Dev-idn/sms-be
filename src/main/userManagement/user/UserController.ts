@@ -1,8 +1,8 @@
 import {Router} from "express";
 import UserService from "./UserService";
-import {SendError, SendOk} from "../../helper/ResponseHelper";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import {RolePermission} from "../role/RoleModel";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 
 const router = Router();
 
@@ -56,12 +56,21 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
         UserService.getAllUser({__v: 0, roleId: 0, menuId: 0, password: 0})
-            .then(result => SendOk(res, result))
+            .then(result => SendOk(res, result.map(items => {
+                return {
+                    _id: items._id,
+                    fullName: items.fullName,
+                    userName: items.userName,
+                    createdBy: items.createdBy? items.createdBy : {_id: null, fullName: "SYSTEM"},
+                    updatedAt: items.updatedAt,
+                    createdAt: items.createdAt
+                };
+            })))
             .catch(error => SendError(res, error))
     });
 

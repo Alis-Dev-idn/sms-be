@@ -1,8 +1,8 @@
 import {Router} from "express";
 import authService from "./AuthService";
 import {joiUserLogin} from "../config/joi/UserJoi";
-import {SendError, SendOk} from "../helper/ResponseHelper";
-import Middleware from "../config/Middleware";
+import {SendError, SendOk} from "../config/ResponseMessage";
+import Security from "../config/Security";
 import {HasPermission, RolePermission} from "../userManagement/role/RoleModel";
 import UserService from "../userManagement/user/UserService";
 
@@ -33,24 +33,19 @@ export default (): Router => {
      *
      *     responses:
      *       200:
-     *         description: Success
-     *         content:
-     *          application/json:
-     *              schema:
-     *                  type: object
-     *                  properties:
-     *                      data:
-     *                          type: object
-     *                          properties:
-     *                              token:
-     *                                  type: string
-     *                                  example: 1234567890abcdef12345678
-     *                                  description: Token for authentication
-     *                              refreshToken:
-     *                                  type: string
-     *                                  example: 1234567890abcdef12345678
-     *                                  description: Refresh token for authentication
-     *
+     *          description: Success
+     *          content:
+     *              application/json:
+     *                  schema:
+     *                      type: object
+     *                      properties:
+     *                          data:
+     *                              type: object
+     *                              properties:
+     *                                  token:
+     *                                      type: string
+     *                                      example: 1234567890abcdef12345678
+     *                                      description: Token for authentication
      */
     router.post("/login",(req, res) => {
         const {error} = joiUserLogin.validate(req.body);
@@ -106,7 +101,7 @@ export default (): Router => {
      *
      *
      */
-    router.post("/register", Middleware.hasAccess(RolePermission.USER_CREATE), (req, res) => {
+    router.post("/register", Security.hasAccess(RolePermission.USER_CREATE), (req, res) => {
         if(!req.permission)
             return res.status(403).json({error: "Forbidden"});
         if(!HasPermission(req.permission))
@@ -122,7 +117,7 @@ export default (): Router => {
     /**
      * @swagger
      * /auth/logout:
-     *   post:
+     *   get:
      *     summary: Logout
      *     tags:
      *       - Auth
@@ -142,9 +137,34 @@ export default (): Router => {
      *                          example: "Logout OK"
      *
      */
-    router.post("/logout", (req, res) => {
-        res.status(200).json({data: "Logout OK"});
-    });
+    router.get("/logout", Security.revokeToken());
+
+    /**
+     * @swagger
+     * /auth/refresh-token:
+     *   get:
+     *     summary: Refresh Token
+     *     tags:
+     *       - Auth
+     *     security:
+     *      - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *          application/json:
+     *              schema:
+     *                  type: object
+     *                  properties:
+     *                      data:
+     *                         type: object
+     *                         properties:
+     *                             token:
+     *                                type: string
+     *                                example: 1234567890abcdef12345678
+     *                                description: Token for authentication
+     */
+    router.get("/refresh-token", Security.refreshToken())
 
     return router;
 }

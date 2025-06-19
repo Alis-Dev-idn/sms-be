@@ -1,12 +1,14 @@
-import {ObjectId} from "mongoose";
 import RoleModel from "../role/RoleModel";
+import {IObjectId} from "../../config/Database";
 
 export default interface UserModel {
-    _id?: ObjectId;
+    _id?: IObjectId;
     fullName: string;
     userName: string;
     password: string;
-    roleId: ObjectId | RoleModel;
-    branchId?: ObjectId;
-    createdBy?: ObjectId | UserModel;
+    roleId: IObjectId | RoleModel;
+    branchId?: IObjectId;
+    createdBy?: IObjectId | UserModel;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

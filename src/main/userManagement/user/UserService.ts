@@ -78,7 +78,10 @@ class UserService {
     }
 
     public getAllUser(projection?: ProjectionType<any>): Promise<UserModel[]> {
-        return this.model.find({}, projection).lean();
+        return this.model.find({}, projection).populate({
+            path: "createdBy",
+            select: {fullName: 1}
+        }).lean();
     }
 
     public getTotalUser(): Promise<number> {
@@ -94,13 +97,13 @@ class UserService {
                 if(!IdValidate(data.roleId.toString()))
                     return reject({status: 400, errorMsg: "Invalid roleId"});
 
-                const cekRole = await this.role.findById(data.roleId);
-                if (!cekRole)
-                    return reject({status: 400, errorMsg: "Role not found"});
-
                 const cekUser = await this.model.findOne({userName: data.userName}).lean();
                 if (cekUser)
                     return reject({status: 400, errorMsg: "User already exists"});
+
+                const cekRole = await this.role.findById(data.roleId);
+                if (!cekRole)
+                    return reject({status: 400, errorMsg: "Role not found"});
 
                 data.password = await hastPassword(data.password);
                 const user = await this.model.create(data);

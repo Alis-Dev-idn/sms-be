@@ -35,6 +35,7 @@ export const SendError = (
         response.status = error.status
         response.error = error.errorMsg
     }
+
     return res.status( response.status || 500).json(
         response.error ? { error: response.error } : { error: "Internal Server Error" }
     )

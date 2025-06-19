@@ -16,6 +16,8 @@ import AuthController from "./auth/AuthController";
 import BranchController from "./bispro/branch/BranchController";
 import StockController from "./bispro/stock/StockController";
 import StockTransactionController from "./bispro/stockTransaction/StockTransactionController";
+import * as path from "node:path";
+import fs from "fs";
 
 class SmsApplication {
 
@@ -62,8 +64,15 @@ class SmsApplication {
         router.use("/menu", MenuController());
         router.use("/branch", BranchController());
         router.use("/stock", StockController());
-        router.use("/stock-transaction", StockTransactionController);
-        router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
+        router.use("/stock-transaction", StockTransactionController());
+        if(process.env.ENVIRONMENT !== "development") {
+            const swaggerPath = path.join(process.cwd(), "swagger.json");
+            const swaggerSpec = JSON.parse(fs.readFileSync(swaggerPath, "utf-8"));
+            console.log("Swagger spec loaded from:", swaggerPath);
+            console.log("Swagger spec:", swaggerSpec);
+            router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+        } else
+            router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
 
         return router;
     }

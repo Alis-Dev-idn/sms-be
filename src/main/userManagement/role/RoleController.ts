@@ -1,8 +1,8 @@
 import {Router} from "express";
 import RoleService from "./RoleService";
-import {SendError, SendOk} from "../../helper/ResponseHelper";
+import {SendError, SendOk} from "../../config/ResponseMessage";
 import {RolePermission, RolePermissionList} from "./RoleModel";
-import Middleware from "../../config/Middleware";
+import Security from "../../config/Security";
 import {AnyExpression} from "mongoose";
 
 
@@ -71,7 +71,7 @@ export default (): Router => {
      *                                          description: List of menu IDs
      *                                      permission:
      *                                          type: array
-     *                                          example: [read, write]
+     *                                          example: [user:read, admin:write]
      *                                          description: List of permissions
      *                                      createdAt:
      *                                          type: string
@@ -86,7 +86,7 @@ export default (): Router => {
      */
     router.get(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
@@ -135,20 +135,27 @@ export default (): Router => {
      *                          items:
      *                              type: object
      *                              properties:
-     *                                  "user read":
+     *                                  "name":
      *                                      type: string
      *                                      description: Permission name
+     *                                      example: "USER READ"
+     *                                  "value":
+     *                                      type: string
+     *                                      description: Permission value
      *                                      example: "user:read"
      */
     router.get(
         "/permission",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_READ
         ),
         (req, res) => {
-            const objRolePermission: Record<string, string> = {};
+            const objRolePermission: Array<Record<string, string>> = [];
             RolePermissionList.forEach((permission) => {
-                objRolePermission[permission.replace(":", " ")] = permission;
+                const permissionObj: Record<string, string> = {};
+                permissionObj["name"] = permission.replace(":", " ").toUpperCase();
+                permissionObj["value"] = permission;
+                objRolePermission.push(permissionObj);
             });
             SendOk(res, objRolePermission);
         });
@@ -180,7 +187,7 @@ export default (): Router => {
      *                          description: List of menu IDs
      *                      permission:
      *                          type: array
-     *                          example: [read, write]
+     *                          example: [user:read, admin:write]
      *                          description: List of permissions
      *
      *     responses:
@@ -208,7 +215,7 @@ export default (): Router => {
      *                              description: List of menu IDs
      *                          permission:
      *                              type: array
-     *                              example: [read, write]
+     *                              example: [user:read, admin:write]
      *                              description: List of permissions
      *                          createdAt:
      *                              type: string
@@ -221,7 +228,7 @@ export default (): Router => {
      */
     router.post(
         "/",
-        Middleware.hasAccess(
+        Security.hasAccess(
             RolePermission.ADMIN_CREATE
         ),
         (req, res) => {
