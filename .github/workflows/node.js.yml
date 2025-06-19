@@ -81,7 +81,8 @@ jobs:
             cd ${{ secrets.PATH_TO_BE }}
             APP_PATH="./sms-be"
             APP_NAME="sms-be"
-            sudo chmod +x "$APP_PATH"
+            sudo chmod 755 "$APP_PATH"
+            sudo chmod 755 ".env"
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
