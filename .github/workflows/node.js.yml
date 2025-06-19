@@ -79,8 +79,16 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.PATH_TO_BE }}
-            sudo chmod +x ${{ secrets.FILE_NAME }}
+            APP_PATH="./sms-be"
+            APP_NAME="sms-be"
+            sudo chmod +x "$APP_PATH"
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-            pm2 ${{ secrets.JOB_NAME }}
+            if pm2 describe "$APP_NAME" > /dev/null; then
+              echo "🔁 App already running, restarting..."
+              pm2 restart "$APP_NAME"
+            else
+              echo "🚀 App not found, starting new instance..."
+              pm2 start "$APP_PATH" --name "$APP_NAME"
+            fi
