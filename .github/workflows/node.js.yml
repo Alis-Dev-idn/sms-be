@@ -85,6 +85,7 @@ jobs:
             
             APP_NAME="sms-be"
             sudo find ${{ secrets.PATH_TO_BE }} -type d -exec chmod 755 {} \;
+            sudo find ${{ secrets.PATH_TO_BE }} -type f \( -name "*.js" -o -name "*.json" \) -exec chmod 755 {} \;
             
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
