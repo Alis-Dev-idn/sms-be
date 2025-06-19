@@ -4,7 +4,6 @@ const fs = require("fs-extra");
 const commands = [
     "rimraf ./dist && rimraf ./buildApp",
     "npx tsc --build",
-    "ts-node scripts/generate-swagger.ts",
     "pkg --compress GZip --output ./buildApp/sms-be package.json",
     "rimraf ./dist"
 ];
