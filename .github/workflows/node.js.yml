@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
@@ -67,6 +66,51 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🧱 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: 💾 Cache pkg-fetch
+        uses: actions/cache@v3
+        with:
+          path: ~/.pkg-cache
+          key: ${{ runner.os }}-pkg-cache-node18
+
+      - name: 📝 Create .env file
+        run: |
+          touch .env
+          echo ENVIRONMENT=staging >> .env
+          echo EXPRESS_SERVER_PORT=${{secrets.EXPRESS_SERVER_PORT}} >> .env
+          echo SERVER_MONGODB_URI=${{secrets.SERVER_MONGODB_URI}} >> .env
+          echo SERVER_MONGODB_USER=${{secrets.SERVER_MONGODB_USER}} >> .env
+          echo SERVER_MONGODB_PASSWORD=${{secrets.SERVER_MONGODB_PASSWORD}} >> .env
+          echo JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}} >> .env
+          echo JWT_EXPIRES_IN=${{secrets.JWT_EXPIRES_IN}} >> .env
+          echo JWT_EXPIRES_IN_REFRESH=${{secrets.JWT_EXPIRES_IN_REFRESH}} >> .env
+          echo DEFAULT_ACCOUNT_FULLNAME=${{secrets.DEFAULT_ACCOUNT_FULLNAME}} >> .env
+          echo DEFAULT_ACCOUNT_USERNAME=${{secrets.DEFAULT_ACCOUNT_USERNAME}} >> .env
+          echo DEFAULT_ACCOUNT_PASSWORD=${{secrets.DEFAULT_ACCOUNT_PASSWORD}} >> .env
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📥 Pre-fetch pkg binary (optional)
+        run: |
+          echo "Try fetching pkg binary..."
+          npx pkg-fetch --target node18-linux-x64 || echo "Skip prefetch if already exists"
+
+      - name: 🔨 Build project
+        run: npm run build
+
+      - name: 📩 Copy .env to buildApp
+        run: |
+          cp .env buildApp/.env
+          cp swagger.json buildApp/swagger.json
       - name: 📂 Sync buildApp to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
