@@ -68,6 +68,8 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           local-dir: 'buildApp/'
           server-dir: 'sms/be/'
+          exclude: ''
+          dangerous-clean-slate: true
       - name: 🖥️ SSH into VM and restart app
         uses: appleboy/ssh-action@master
         with:
