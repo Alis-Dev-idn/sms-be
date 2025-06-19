@@ -33,6 +33,7 @@ jobs:
       - name: 📝 Create .env file
         run: |
           touch .env
+          echo ENVIRONMENT="staging" >> .env
           echo EXPRESS_SERVER_PORT=${{secrets.EXPRESS_SERVER_PORT}} >> .env
           echo SERVER_MONGODB_URI=${{secrets.SERVER_MONGODB_URI}} >> .env
           echo SERVER_MONGODB_USER=${{secrets.SERVER_MONGODB_USER}} >> .env
