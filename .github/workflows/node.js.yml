@@ -56,10 +56,10 @@ jobs:
       - name: 🔨 Build project
         run: npm run build
 
-      - name: 📩 Copy .env to buildApp
+      - name: 📩 Copy .env to dist
         run: |
-          cp .env buildApp/.env
-          cp swagger.json buildApp/swagger.json
+          cp .env ./dist/.env
+          cp swagger.json ./dist/swagger.json
 
       - name: 📂 Sync buildApp to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -69,7 +69,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: 'ftps'
           port: ${{ secrets.FTP_PORT }}
-          local-dir: 'buildApp/'
+          local-dir: 'dist/'
           server-dir: 'sms/be/'
           exclude: ''
           dangerous-clean-slate: true
@@ -82,18 +82,18 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.PATH_TO_BE }}
-            APP_PATH="./sms-be"
+            
             APP_NAME="sms-be"
-            sudo chmod 755 "$APP_PATH"
-            sudo chmod 755 ".env"
-            sudo chmod 755 "swagger.json"
+            sudo find ${{ secrets.PATH_TO_BE }} -type d -exec chmod 755 {} \;
+            
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+            
             if pm2 describe "$APP_NAME" > /dev/null; then
               echo "🔁 App already running, restarting..."
               pm2 restart "$APP_NAME"
             else
               echo "🚀 App not found, starting new instance..."
-              pm2 start "$APP_PATH" --name "$APP_NAME"
+              pm2 start node --name "$APP_NAME" -- App.js
             fi
