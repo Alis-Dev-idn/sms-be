@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  be-deploy:
-    name: 🎉 Deploy
+  build:
+    name: 🔧 Build and Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -61,6 +61,12 @@ jobs:
           cp .env buildApp/.env
           cp swagger.json buildApp/swagger.json
 
+  deploy:
+    name : 🚀 Deploy to server
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
       - name: 📂 Sync buildApp to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
