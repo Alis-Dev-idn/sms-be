@@ -57,7 +57,9 @@ jobs:
         run: npm run build
 
       - name: 📩 Copy .env to buildApp
-        run: cp .env buildApp/.env
+        run: |
+          cp .env buildApp/.env
+          cp swagger.json buildApp/swagger.json
 
       - name: 📂 Sync buildApp to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
