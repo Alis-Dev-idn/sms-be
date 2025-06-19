@@ -80,4 +80,7 @@ jobs:
           script: |
             cd ${{ secrets.PATH_TO_BE }}
             sudo chmod +x ${{ secrets.FILE_NAME }}
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
             pm2 ${{ secrets.JOB_NAME }}
