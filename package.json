@@ -45,7 +45,8 @@
   "pkg": {
     "assets": [
       "./node_modules/**/*",
-      "./dist/**/*"
+      "./dist/**/*",
+      "swagger.json"
     ],
     "externals": [
       "axios"
