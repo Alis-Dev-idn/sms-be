@@ -68,6 +68,8 @@ class SmsApplication {
         if(process.env.ENVIRONMENT !== "development") {
             const swaggerPath = path.join(process.cwd(), "swagger.json");
             const swaggerSpec = JSON.parse(fs.readFileSync(swaggerPath, "utf-8"));
+            console.log("Swagger spec loaded from:", swaggerPath);
+            console.log("Swagger spec:", swaggerSpec);
             router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
         } else
             router.use("/swagger-ui", swaggerUi.serve, swaggerUi.setup(SwaggerConfig));
