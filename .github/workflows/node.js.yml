@@ -65,6 +65,17 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: 'ftps'
-          port: 12121
+          port: ${{ secrets.FTP_PORT }}
           local-dir: 'buildApp/'
           server-dir: 'sms/be/'
+      - name: 🖥️ SSH into VM and restart app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.PATH_TO_BE }}
+            sudo chmod +x ${{ secrets.FILE_NAME }}
+            pm2 ${{ secrets.JOB_NAME }}
