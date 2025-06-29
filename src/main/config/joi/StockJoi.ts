@@ -18,7 +18,7 @@ export const joiCreateStock: ObjectSchema = joi.object({
         'date.greater': 'Expiry date must be in the future',
         'any.required': 'Expiry date is required'
     }),
-    stockDate: joi.date().less('now').required().messages({
+    stockDate: joi.date().required().messages({
         'date.base': 'Stock date must be a valid date',
         'date.less': 'Stock date must be in the past',
         'any.required': 'Stock date is required'
